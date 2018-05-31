@@ -84,7 +84,7 @@ You should read it, I'd love feedback!
 
 ### Do you accept contributions?
 Absolutely! If your use case isn't compatible with the project, you find a
-bug, or just want to donate some tests, make an issue or send a PR please.
+bug, or just want to donate some tests; make an issue or send a PR please.
 
 ## License
 MIT
