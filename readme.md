@@ -1,7 +1,7 @@
 # Asynchronize
 ### The easiest way to make a method asynchronous.
 
-Ever find yourself writing the same boilerplate for all your asynchronous methods?
+Find yourself writing the same boilerplate for all your asynchronous methods?
 Get dryyyy with asynchronize.
 
 ## Usage
