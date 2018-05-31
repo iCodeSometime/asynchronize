@@ -40,7 +40,7 @@ class BasicSpec < Minitest::Test
         Test.asynchronize :notamethod
         Test.method_defined?(:notamethod).must_equal false
       end
-      it "should not affect methods on other classes" do
+      it "should not affect methods on other classes when called before" do
         Test.asynchronize :test
         class MyTest
           def test
@@ -48,6 +48,15 @@ class BasicSpec < Minitest::Test
         end
         Test.new.test.class.must_equal(Thread)
         MyTest.new.test.class.wont_equal(Thread)
+      end
+      it "should not affect methods on other classes when called after" do
+        class AnotherTest
+          def test
+          end
+        end
+        Test.asynchronize :test
+        Test.new.test.class.must_equal(Thread)
+        AnotherTest.new.test.class.wont_equal(Thread)
       end
     end
 
