@@ -21,14 +21,13 @@ module Asynchronize
       end
 
       # Save the old method_added so we don't overwrite it.
-      @@old_method_added = nil
-      if method_defined? "method_added"
-        @@old_method_added = instance_method(:method_added)
+      if method_defined? :method_added
+        alias_method :old_method_added, :method_added
         undef_method(:method_added)
       end
 
       def self.method_added(method)
-        @@old_method_added.bind(self).(method) unless @@old_method_added.nil?
+        old_method_added(method) if method_defined? :old_method_added
         return unless @@methods_to_async.include? method
         return if @@methods_asyncing.include? method
         Asynchronize.create_new_method(method, self)
