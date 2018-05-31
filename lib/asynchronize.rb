@@ -1,5 +1,3 @@
-# @todo Figure out how to factor out the common parts
-
 module Asynchronize
   require 'set'
   def self.included base
@@ -44,7 +42,7 @@ module Asynchronize
       return if @@asynced_methods.include?(old_method)
       undef_method method
       @@methods_asyncing.add(method)
-      
+
       define_method(method) do |*args, &block|
         return Thread.new(args, block) do |targs, tblock|
           result = old_method.bind(self).(*targs)
