@@ -82,8 +82,8 @@ class BasicSpec < Minitest::Test
 
     describe "when we call asynchronized before defining the method" do
       before do
-        Test.asynchronize :othertest
         class Test
+          asynchronize :othertest
           def othertest
             return 5
           end
@@ -102,6 +102,35 @@ class BasicSpec < Minitest::Test
           temp = res
         end.join
         temp.must_equal 5, "temp is equal to #{temp}."
+      end
+    end
+
+    describe "when there is an existing method_added" do
+      before do
+        if defined? AnotherTest
+          BasicSpec.send(:remove_const, :AnotherTest)
+        end
+        class AnotherTest
+          @running = false
+          def self.method_added(method)
+            return if @running
+            @running = true
+            old_method = instance_method(method)
+            undef_method(method)
+            define_method(method) do
+              return old_method.bind(self).call + 1
+            end
+            @running = false
+          end
+          include Asynchronize
+          asynchronize :test
+          def test
+            return 4
+          end
+        end
+      end
+      it "should call that method_added before, and only once." do
+        AnotherTest.new.test.join[:return_value].must_equal 5
       end
     end
   end
