@@ -1,6 +1,6 @@
 module Asynchronize
   require 'set'
-  def self.included base
+  def self.included(base)
     base.class_eval do
       # The methods we have already asynchronized
       @@asynced_methods = Set.new
@@ -44,16 +44,16 @@ module Asynchronize
 
       define_method(method) do |*args, &block|
         return Thread.new(args, block) do |targs, tblock|
-          result = old_method.bind(self).(*targs)
-          unless tblock.nil?
-            tblock.call(result);
-          else
+          result = old_method.bind(self).call(*targs)
+          if tblock.nil?
             Thread.current[:return_value] = result
+          else
+            tblock.call(result)
           end
         end
-      end # define_method
+      end
       @@methods_asyncing.delete(method)
-      @@asynced_methods.add(instance_method method)
+      @@asynced_methods.add(instance_method(method))
     end
   end
 end
