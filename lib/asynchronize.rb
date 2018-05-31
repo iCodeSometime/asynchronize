@@ -27,9 +27,10 @@ module Asynchronize
       end
 
       def self.method_added(method)
+        # Don't do anything else if we're not actually adding a new method
+        return if @@methods_asyncing.include? method
         old_method_added(method) if method_defined? :old_method_added
         return unless @@methods_to_async.include? method
-        return if @@methods_asyncing.include? method
         Asynchronize.create_new_method(method, self)
       end
     end
