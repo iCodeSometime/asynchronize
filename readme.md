@@ -5,7 +5,7 @@
 ### The easiest way to make multiple methods asynchronous.
 
 Find yourself writing the same boilerplate for all your asynchronous methods?
-Get dryyy with asynchronize.
+Get dry with asynchronize.
 
 Just install with `gem install asynchronize` or add to your Gemfile and `bundle`
 
@@ -56,8 +56,14 @@ end
 It's extra typing, adds an unneeded extra layer of nesting, and just feels
 dirty. Now, I can just call asynchronize to make any method asynchronous.
 
+## Versioning Policy
+Once I feel like this is ready for production code - version 1.0.0, this project
+will follow [Semantic Versioning](https://semver.org) until then, anything that
+changes the public interface will increment the minor version number (0.x.0),
+and anything else will increment the patch number (0.0.x).
+
 ## FAQ
-### Metaprogramming?? won't this hurt performance?
+### Doesn't metaprogramming hurt performance?
 Not at all! We're actually totally redefining the methods, so the method itself
 is exactly as efficient as it would have been had you wrote it that way
 originally.
