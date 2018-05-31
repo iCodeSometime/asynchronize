@@ -1,5 +1,5 @@
 # Asynchronize
-### The easiest way to make a method asynchronous.
+### The easiest way to make multiple methods asynchronous.
 
 Find yourself writing the same boilerplate for all your asynchronous methods?
 Get dryyy with asynchronize.
