@@ -26,14 +26,14 @@ module Asynchronize
         @@methods_to_async.merge(methods)
         methods.each do |method|
           # If it's not defined yet, we'll get it with method_added
-          next unless method_defined? method
+          next unless method_defined?(method)
           Asynchronize.create_new_method(method, self)
         end
       end
 
       # require 'pry'; binding.pry
       # Save the old method_added so we don't overwrite it.
-      if self.methods.include? :method_added
+      if self.methods.include?(:method_added)
         singleton_class.send(:alias_method, :old_method_added, :method_added)
         singleton_class.undef_method(:method_added)
       end
@@ -46,10 +46,10 @@ module Asynchronize
       #   should not be called directly.
       def self.method_added(method)
         # Don't do anything else if we're not actually adding a new method
-        return if @@methods_asyncing.include? method
+        return if @@methods_asyncing.include?(method)
         @@methods_asyncing.add(method)
-        self.old_method_added(method) if self.methods.include? :old_method_added
-        return unless @@methods_to_async.include? method
+        self.old_method_added(method) if self.methods.include?(:old_method_added)
+        return unless @@methods_to_async.include?(method)
         # This will delete from @@methods_asyncing
         Asynchronize.create_new_method(method, self)
       end
@@ -64,7 +64,7 @@ module Asynchronize
       # Can't just store the method name, since it would break if the method
       # was redefined.
       return if @@asynced_methods.include?(old_method)
-      undef_method method
+      undef_method(method)
 
       @@methods_asyncing.add(method)
       define_method(method, Asynchronize._build_new_method(old_method))
