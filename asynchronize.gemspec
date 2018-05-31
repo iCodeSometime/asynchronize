@@ -2,7 +2,7 @@ require 'date'
 
 Gem::Specification.new do |s|
   s.name = 'asynchronize'
-  s.version = 0
+  s.version = '0.1.0'
   s.date = Date.today.to_s
   s.summary = 'Easily make multiple methods asynchronous at once.'
   s.description = 'Take any synchronous method, and run it asynchronously, ' +
