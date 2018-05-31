@@ -45,22 +45,22 @@ module Asynchronize
       undef_method method
 
       @@methods_asyncing.add(method)
-      define_method(method) do |*args, &block|
-        return _build_thread(old_method, args, block)
-      end
+      define_method(method, Asynchronize._build_new_method(old_method))
       @@methods_asyncing.delete(method)
       @@asynced_methods.add(instance_method(method))
     end
   end
 
   private
-  def _build_thread(old_method, args, block)
-    return Thread.new(old_method, args, block) do |told_method, targs, tblock|
-      result = told_method.bind(self).call(*targs)
-      if tblock.nil?
-        Thread.current[:return_value] = result
-      else
-        tblock.call(result)
+  def self._build_new_method(old_method)
+    return Proc.new do |*args, &block|
+      return Thread.new(old_method, args, block) do |told_method, targs, tblock|
+        result = told_method.bind(self).call(*targs)
+        if tblock.nil?
+          Thread.current[:return_value] = result
+        else
+          tblock.call(result)
+        end
       end
     end
   end
