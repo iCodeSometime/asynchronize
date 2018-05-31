@@ -2,7 +2,7 @@
 ### The easiest way to make a method asynchronous.
 
 Find yourself writing the same boilerplate for all your asynchronous methods?
-Get dryyyy with asynchronize.
+Get dryyy with asynchronize.
 
 There are no dependencies other than Ruby.
 Just install with `gem install asynchronize` or add to your Gemfile and `bundle`
