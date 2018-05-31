@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/kennycoc/asynchronize.svg?branch=master)](https://travis-ci.org/kennycoc/asynchronize)
 # Asynchronize
 ### The easiest way to make multiple methods asynchronous.
 
