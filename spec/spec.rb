@@ -14,7 +14,7 @@ class BasicSpec < Minitest::Test
         end
       end
     end
-    
+
     describe "when we asynchronize a method" do
       it "should not be the same method" do
         original_method = Test.instance_method :test
@@ -59,11 +59,9 @@ class BasicSpec < Minitest::Test
         Test.new.test.class.must_equal(Thread,
           "The asynchronized method without a block did not return a thread.")
       end
-
       it "should provide the result in return_value" do
         Test.new.test.join[:return_value].must_equal 5
       end
-
       it "should provide the result as a block parameter" do
         temp = 0
         Test.new.test do |res|
@@ -86,11 +84,9 @@ class BasicSpec < Minitest::Test
         Test.new.othertest.class.must_equal(Thread,
           "The asynchronized method without a block did not return a thread.")
       end
-
       it "should provide the result in return_value" do
         Test.new.othertest.join[:return_value].must_equal 5
       end
-
       it "should provide the result as a block parameter" do
         temp = 0
         Test.new.othertest do |res|
