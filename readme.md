@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/kennycoc/asynchronize.svg?branch=master)](https://travis-ci.org/kennycoc/asynchronize)
 [![Maintainability](https://api.codeclimate.com/v1/badges/30d40e270a3d7a0775a9/maintainability)](https://codeclimate.com/github/kennycoc/asynchronize/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/30d40e270a3d7a0775a9/test_coverage)](https://codeclimate.com/github/kennycoc/asynchronize/test_coverage)
 # Asynchronize
 ### The easiest way to make multiple methods asynchronous.
 
