@@ -4,6 +4,9 @@
 Find yourself writing the same boilerplate for all your asynchronous methods?
 Get dryyyy with asynchronize.
 
+There are no dependencies other than Ruby.
+Just install with `gem install asynchronize` or add to your Gemfile and `bundle`
+
 ## Usage
 Create a class with asynchronized methods
 ```Ruby
@@ -80,8 +83,8 @@ there's twice of many lines in the tests as the source.
 You should read it, I'd love feedback!
 
 ### Do you accept contributions?
-Absolutely! If your use case isn't compatible with the project, or you find a
-bug, make an issue or send a PR please.
+Absolutely! If your use case isn't compatible with the project, you find a
+bug, or just want to donate some tests, make an issue or send a PR please.
 
 ## License
 MIT
