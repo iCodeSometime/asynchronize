@@ -12,12 +12,14 @@ Gem::Specification.new do |s|
   s.files = [
     'lib/asynchronize.rb',
     'spec/spec.rb',
+    'spec/minitest_helper.rb',
     'asynchronize.gemspec',
     'Rakefile',
-    'readme.md'
+    'readme.md',
   ]
   s.test_files = [
-    'spec/spec.rb'
+    'spec/spec.rb',
+    'spec/minitest_helper.rb'
   ]
   s.homepage = 'https://github.com/kennycoc/asynchronize'
   s.license = 'MIT'
