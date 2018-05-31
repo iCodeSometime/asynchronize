@@ -1,4 +1,4 @@
-require 'minitest/autorun'
+require './spec/minitest_helper.rb'
 require './lib/asynchronize.rb'
 
 class BasicSpec < Minitest::Test
