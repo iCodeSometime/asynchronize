@@ -51,8 +51,8 @@ def method_name(args)
   end
 end
 ```
-It's extra typing, and it adds an unneeded extra layer of nesting.
-Now, I can just call asynchronize to make any methods asynchronous.
+It's extra typing, adds an unneeded extra layer of nesting, and just feels
+dirty. Now, I can just call asynchronize to make any methods asynchronous.
 
 ## FAQ
 ### Metaprogramming?? won't this hurt performance?
@@ -63,12 +63,13 @@ originally.
 ### So, how does it work?
 When you `include Asynchronize` it does two things.
 1. It defines the asynchronize method for your class
-2. it defines method_added on your class.
-asynchronize creates a set containing all of the methods you want asynchronized.
-If they already exists, they are modified; otherwise, method_added checks for
-them with every new method you add to the class.
-This way, you can call asynchronize any time, and know that the methods will
-be asynchronized.
+2. It defines method_added on your class.
+
+When you call asynchronize, it creates a set containing all of the methods you
+want asynchronized. If they already exists, they are modified; otherwise,
+method_added checks for them with every new method you add to the class. This
+way, you can call asynchronize any time, and know that the methods will be
+asynchronized when you use them.
 
 ### So, does that mean I can't use asynchronize if I already use method_added?
 We check for and alias your old method_added. It will be called before
@@ -77,9 +78,9 @@ Asynchronize, you have to do the same and be careful to not overwrite ours!
 
 ### Why do I need another framework? My code's bloated enough as it is?
 It's super tiny. Just a light wrapper around the existing language features.
-Seriously, it's just around fifty lines of code. Actually, according to cloc
-there's twice of many lines in the tests as the source.
-You should read it, I'd love feedback!
+Seriously, it's just around fifty lines of code. Actually, according to
+[cloc](https://www.npmjs.com/package/cloc) there's twice of many lines in the
+tests as the source. You should read it, I'd love feedback!
 
 ### Do you accept contributions?
 Absolutely! If your use case isn't compatible with the project, you find a
