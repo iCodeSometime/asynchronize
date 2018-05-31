@@ -24,10 +24,9 @@ class Test
 end
 ```
 
-Now, to call those methods:
+Now, to call those methods.
 You can just pass it a block.
 ```Ruby
-# Either pass a block
 Test.new.my_test do |return_value|
   puts return_value
 end
