@@ -43,7 +43,7 @@ puts thread[:return_value]
 ```
 
 ## Inspiration
-I got tired of writing this over and over
+I got tired of writing this over and over.
 ```Ruby
 def method_name(args)
   Thread.new(args) do |targs|
@@ -52,7 +52,7 @@ def method_name(args)
 end
 ```
 It's extra typing, adds an unneeded extra layer of nesting, and just feels
-dirty. Now, I can just call asynchronize to make any methods asynchronous.
+dirty. Now, I can just call asynchronize to make any method asynchronous.
 
 ## FAQ
 ### Metaprogramming?? won't this hurt performance?
@@ -66,7 +66,7 @@ When you `include Asynchronize` it does two things.
 2. It defines method_added on your class.
 
 When you call asynchronize, it creates a set containing all of the methods you
-want asynchronized. If they already exists, they are modified; otherwise,
+want asynchronized. If they already exist, they are modified; otherwise,
 method_added checks for them with every new method you add to the class. This
 way, you can call asynchronize any time, and know that the methods will be
 asynchronized when you use them.
@@ -79,7 +79,7 @@ Asynchronize, you have to do the same and be careful to not overwrite ours!
 ### Why do I need another framework? My code's bloated enough as it is?
 It's super tiny. Just a light wrapper around the existing language features.
 Seriously, it's just around fifty lines of code. Actually, according to
-[cloc](https://www.npmjs.com/package/cloc) there's twice of many lines in the
+[cloc](https://www.npmjs.com/package/cloc) there's twice as many lines in the
 tests as the source. You should read it, I'd love feedback!
 
 ### Do you accept contributions?
