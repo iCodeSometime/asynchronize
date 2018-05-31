@@ -38,22 +38,29 @@ module Asynchronize
   def self.create_new_method(method, klass)
     klass.instance_eval do
       old_method = instance_method(method)
+      # Can't just store the method name, since it would break if the method
+      # was redefined.
       return if @@asynced_methods.include?(old_method)
       undef_method method
-      @@methods_asyncing.add(method)
 
+      @@methods_asyncing.add(method)
       define_method(method) do |*args, &block|
-        return Thread.new(args, block) do |targs, tblock|
-          result = old_method.bind(self).call(*targs)
-          if tblock.nil?
-            Thread.current[:return_value] = result
-          else
-            tblock.call(result)
-          end
-        end
+        return _build_thread(old_method, args, block)
       end
       @@methods_asyncing.delete(method)
       @@asynced_methods.add(instance_method(method))
+    end
+  end
+
+  private
+  def _build_thread(old_method, args, block)
+    return Thread.new(old_method, args, block) do |told_method, targs, tblock|
+      result = told_method.bind(self).call(*targs)
+      if tblock.nil?
+        Thread.current[:return_value] = result
+      else
+        tblock.call(result)
+      end
     end
   end
 end
