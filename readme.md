@@ -35,7 +35,7 @@ thread.join
 puts thread[:return_value] # > test
 ```
 
-Or you can just pass it a block.
+Or for convenience, you can just pass it a block.
 The return value, will still be in the thread variable `:return_value`
 ```Ruby
 Test.new.my_test do |return_value|
@@ -100,7 +100,8 @@ bug, or just want to donate some tests; make an issue or send a PR please.
 
 ### What's the difference between this and promises?
 This attempts to be a very lightweight wrapper around threads. There's no new
-interface to use, it's just regular methods that run in their own thread.
+interface to use, just define a regular method, and interact with it like a
+regular thread.
 
 ## License
 MIT
