@@ -107,10 +107,10 @@ class BasicSpec < Minitest::Test
 
     describe "when there is an existing method_added" do
       before do
-        if defined? AnotherTest
-          BasicSpec.send(:remove_const, :AnotherTest)
+        if defined? MethodAddedTest
+          BasicSpec.send(:remove_const, :MethodAddedTest)
         end
-        class AnotherTest
+        class MethodAddedTest
           @running = false
           def self.method_added(method)
             return if @running
@@ -130,7 +130,7 @@ class BasicSpec < Minitest::Test
         end
       end
       it "should call that method_added before, and only once." do
-        AnotherTest.new.test.join[:return_value].must_equal 5
+        MethodAddedTest.new.test.join[:return_value].must_equal 5
       end
     end
   end
