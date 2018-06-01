@@ -31,7 +31,6 @@ module Asynchronize
         end
       end
 
-      # require 'pry'; binding.pry
       # Save the old method_added so we don't overwrite it.
       if self.methods.include?(:method_added)
         singleton_class.send(:alias_method, :old_method_added, :method_added)
