@@ -97,6 +97,7 @@ tests as the source. You should read it, I'd love feedback!
 ### Do you accept contributions?
 Absolutely! If your use case isn't compatible with the project, you find a
 bug, or just want to donate some tests; make an issue or send a PR please.
+To run the test suite, just run `bundle` then `rake` from the project directory.
 
 ### What's the difference between this and promises?
 This attempts to be a very lightweight wrapper around threads. There's no new
