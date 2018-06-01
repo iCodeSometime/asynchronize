@@ -78,11 +78,8 @@ module Asynchronize
     return Proc.new do |*args, &block|
       return Thread.new(old_method, args, block) do |told_method, targs, tblock|
         result = told_method.bind(self).call(*targs)
-        if tblock.nil?
-          Thread.current[:return_value] = result
-        else
-          tblock.call(result)
-        end
+        Thread.current[:return_value] = result
+        tblock.call(result) unless tblock.nil?
       end
     end
   end
