@@ -27,21 +27,20 @@ end
 ```
 
 Now, to call those methods.
-You can just pass it a block.
-```Ruby
-Test.new.my_test do |return_value|
-  puts return_value
-end
-# > test
-```
-
-Or, you can manage the thread yourself; the returned value will be in the thread
+You can manage the thread yourself; the returned value will be in the thread
 variable `:return_value` once it returns.
 ```Ruby
 thread = Test.new.my_test
 thread.join
-puts thread[:return_value]
-# > test
+puts thread[:return_value] # > test
+```
+
+Or you can just pass it a block.
+The return value, will still be in the thread variable `:return_value`
+```Ruby
+Test.new.my_test do |return_value|
+  puts return_value # > test
+end
 ```
 
 ## Inspiration
@@ -54,13 +53,16 @@ def method_name(args)
 end
 ```
 It's extra typing, adds an unneeded extra layer of nesting, and just feels
-dirty. Now, I can just call asynchronize to make any method asynchronous.
+dirty. Now, just call asynchronize to make any method asynchronous.
 
 ## Versioning Policy
 Once I feel like this is ready for production code - version 1.0.0, this project
-will follow [Semantic Versioning](https://semver.org) until then, anything that
-changes the public interface will increment the minor version number (0.x.0),
-and anything else will increment the patch number (0.0.x).
+will follow [Semantic Versioning](https://semver.org) until then, the patch
+number (0.0.x) will be updated for any changes that do not affect the public
+interface. Versions that increment the minor number will have at least one of
+the following. A new feature will be added, some feature will be deprecated, or
+some previously deprecated feature will be removed. Deprecated features will be
+removed on the very next version that increments the minor version number.
 
 ## FAQ
 ### Doesn't metaprogramming hurt performance?
