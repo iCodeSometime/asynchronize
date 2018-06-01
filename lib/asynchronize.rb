@@ -1,14 +1,19 @@
 module Asynchronize
   require 'set'
   def self.included(base)
+      
+    # @@asynced_methods     ... methods we have already asynchronized.
+    # @@methods_to_async    ... methods that should be asynchronized.
+    # @@methods_asyncing    ... what is the short version of this?
+    #   Originally used a single value here, but that's not thread safe.
+    #   Though you probably have other problems if you have multiple,
+    #   threads adding methods to your class.
+      
     base.class_eval do
-      # The methods we have already asynchronized
+        
+      # See notes above for class variable descriptions
       @@asynced_methods = Set.new
-      # The methods that should be asynchronized.
       @@methods_to_async = Set.new
-      # Originally used a single value here, but that's not thread safe.
-      # ...Though you probably have other problems if you have multiple
-      # threads adding methods to your class.
       @@methods_asyncing = Set.new
 
       ##
