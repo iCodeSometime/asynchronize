@@ -53,7 +53,9 @@ def method_name(args)
 end
 ```
 It's extra typing, adds an unneeded extra layer of nesting, and just feels
-dirty. Now, just call asynchronize to make any method asynchronous.
+dirty. I couldn't find an existing library that wasn't trying to solve other
+problems I didn't have. Now, just call asynchronize to make any method
+asynchronous.
 
 ## Versioning Policy
 Once I feel like this is ready for production code - version 1.0.0, this project
@@ -95,6 +97,10 @@ tests as the source. You should read it, I'd love feedback!
 ### Do you accept contributions?
 Absolutely! If your use case isn't compatible with the project, you find a
 bug, or just want to donate some tests; make an issue or send a PR please.
+
+### What's the difference between this and promises?
+This attempts to be a very lightweight wrapper around threads. There's no new
+interface to use, it's just regular methods that run in their own thread.
 
 ## License
 MIT
