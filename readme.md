@@ -91,8 +91,8 @@ Asynchronize, you have to do the same and be careful to not overwrite ours!
 ### Why do I need another framework? My code's bloated enough as it is?
 It's super tiny. Just a light wrapper around the existing language features.
 Seriously, it's just around fifty lines of code. Actually, according to
-[cloc](https://www.npmjs.com/package/cloc) there's almost four times as many lines in the
-tests as the source. You should read it, I'd love feedback!
+[cloc](https://www.npmjs.com/package/cloc) there's almost four times as many
+lines in the tests as the source. You should read it, I'd love feedback!
 
 ### Do you accept contributions?
 Absolutely! If your use case isn't compatible with the project, you find a
