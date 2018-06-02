@@ -4,15 +4,15 @@ require './lib/asynchronize.rb'
 class BasicSpec < Minitest::Test
   describe Asynchronize do
     before do
-      if defined? Test
-        BasicSpec.send(:remove_const, :Test)
-      end
       class Test
         include Asynchronize
         def test(val=5)
           return val
         end
       end
+    end
+    after do
+      BasicSpec.send(:remove_const, :Test)
     end
 
     describe "when we asynchronize a method" do
@@ -42,21 +42,21 @@ class BasicSpec < Minitest::Test
       end
       it "should not affect methods on other classes when called before" do
         Test.asynchronize :test
-        class MyTest
+        class OtherBeforeTest
           def test
           end
         end
         Test.new.test.class.must_equal(Thread)
-        MyTest.new.test.class.wont_equal(Thread)
+        OtherBeforeTest.new.test.class.wont_equal(Thread)
       end
       it "should not affect methods on other classes when called after" do
-        class AnotherTest
+        class OtherAfterTest
           def test
           end
         end
         Test.asynchronize :test
         Test.new.test.class.must_equal(Thread)
-        AnotherTest.new.test.class.wont_equal(Thread)
+        OtherAfterTest.new.test.class.wont_equal(Thread)
       end
     end
 
@@ -107,9 +107,6 @@ class BasicSpec < Minitest::Test
 
     describe "when there is an existing method_added" do
       before do
-        if defined? MethodAddedTest
-          BasicSpec.send(:remove_const, :MethodAddedTest)
-        end
         class MethodAddedTest
           @running = false
           def self.method_added(method)
@@ -128,6 +125,9 @@ class BasicSpec < Minitest::Test
             return 4
           end
         end
+      end
+      after do
+        BasicSpec.send(:remove_const, :MethodAddedTest)
       end
       it "should call that method_added before, and only once." do
         MethodAddedTest.new.test.join[:return_value].must_equal 5
