@@ -60,15 +60,16 @@ module Asynchronize
   def self.create_new_method(method, klass)
     klass.instance_eval do
       old_method = instance_method(method)
-      # Can't just store the method name, since it would break if the method
-      # was redefined.
-      return if @@asynced_methods.include?(old_method)
-      undef_method(method)
-
-      @@methods_asyncing.add(method)
-      define_method(method, Asynchronize._build_new_method(old_method))
-      @@methods_asyncing.delete(method)
-      @@asynced_methods.add(instance_method(method))
+      # Old method name being stored would break if method was redefined
+      if @@asynced_methods.include?(old_method)
+        return @@asynced_methods.include?(old_method)
+      else
+        undef_method(method)
+        @@methods_asyncing.add(method)
+        define_method(method, Asynchronize._build_new_method(old_method))
+        @@methods_asyncing.delete(method)
+        @@asynced_methods.add(instance_method(method))
+      end
     end
   end
 
