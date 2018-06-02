@@ -133,5 +133,21 @@ class BasicSpec < Minitest::Test
         MethodAddedTest.new.test.join[:return_value].must_equal 5
       end
     end
+
+    describe "when inheriting from another class" do
+      before do
+        class ChildClassTest < Test
+          def test
+            return super + 1
+          end
+        end
+      end
+      it "should be able to call super when it's been asynchronized" do
+        class ChildClassTest
+          asynchronize :test
+        end
+        ChildClassTest.new.test.join[:return_value].must_equal 6
+      end
+    end
   end
 end
