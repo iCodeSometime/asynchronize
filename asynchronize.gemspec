@@ -13,9 +13,8 @@ Gem::Specification.new do |s|
     'lib/asynchronize.rb',
     'spec/spec.rb',
     'spec/minitest_helper.rb',
-    'asynchronize.gemspec',
-    'Rakefile',
     'readme.md',
+    'LICENSE',
   ]
   s.test_files = [
     'spec/spec.rb',
