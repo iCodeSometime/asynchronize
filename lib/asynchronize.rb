@@ -3,13 +3,13 @@ module Asynchronize
   def self.included(base)
     base.class_eval do
       # The methods we have already asynchronized
-      @@asynced_methods = Set.new
+      @asynced_methods = Set.new
       # The methods that should be asynchronized.
-      @@methods_to_async = Set.new
+      @methods_to_async = Set.new
       # Originally used a single value here, but that's not thread safe.
       # ...Though you probably have other problems if you have multiple
       # threads adding methods to your class.
-      @@methods_asyncing = Set.new
+      @methods_asyncing = Set.new
 
       ##
       # Call to asynchronize a method.
@@ -23,7 +23,7 @@ module Asynchronize
       # @example To add any number of methods to be asynchronized.
       #   asynchronize :method1, :method2, :methodn
       def self.asynchronize(*methods)
-        @@methods_to_async.merge(methods)
+        @methods_to_async.merge(methods)
         methods.each do |method|
           # If it's not defined yet, we'll get it with method_added
           next unless method_defined?(method)
@@ -44,12 +44,14 @@ module Asynchronize
       #   anything else Ruby calls this automatically when defining a method; it
       #   should not be called directly.
       def self.method_added(method)
-        # Don't do anything else if we're not actually adding a new method
-        return if @@methods_asyncing.include?(method)
-        @@methods_asyncing.add(method)
+        # Return if this is an inherited class that hasn't included asynchronize
+        return if @methods_asyncing.nil?
+        # Return if we're already processing this method
+        return if @methods_asyncing.include?(method)
+        @methods_asyncing.add(method)
         self.old_method_added(method) if self.methods.include?(:old_method_added)
-        return unless @@methods_to_async.include?(method)
-        # This will delete from @@methods_asyncing
+        return unless @methods_to_async.include?(method)
+        # This will delete from @methods_asyncing
         Asynchronize.create_new_method(method, self)
       end
     end
@@ -62,13 +64,13 @@ module Asynchronize
       old_method = instance_method(method)
       # Can't just store the method name, since it would break if the method
       # was redefined.
-      return if @@asynced_methods.include?(old_method)
+      return if @asynced_methods.include?(old_method)
       undef_method(method)
 
-      @@methods_asyncing.add(method)
+      @methods_asyncing.add(method)
       define_method(method, Asynchronize._build_new_method(old_method))
-      @@methods_asyncing.delete(method)
-      @@asynced_methods.add(instance_method(method))
+      @methods_asyncing.delete(method)
+      @asynced_methods.add(instance_method(method))
     end
   end
 

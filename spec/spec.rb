@@ -137,10 +137,14 @@ class BasicSpec < Minitest::Test
     describe "when inheriting from another class" do
       before do
         class ChildClassTest < Test
+          include Asynchronize
           def test
             return super + 1
           end
         end
+      end
+      after do
+        BasicSpec.send(:remove_const, :ChildClassTest)
       end
       it "should be able to call super when it's been asynchronized" do
         class ChildClassTest
@@ -148,6 +152,25 @@ class BasicSpec < Minitest::Test
         end
         ChildClassTest.new.test.join[:return_value].must_equal 6
       end
+      it "should be able to call super when super has been asynchronized" do
+        class Test
+          asynchronize :test
+        end
+        class ChildClassTest
+          undef_method :test
+          def test
+            return super.join[:return_value] + 1
+          end
+        end
+        ChildClassTest.new.test.must_equal 6
+      end
     end
   end
+
+  # describe "when being inherited from another class" do
+  #   before do
+  #
+  #   end
+  #   after do
+  # end
 end
