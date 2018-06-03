@@ -166,11 +166,4 @@ class BasicSpec < Minitest::Test
       end
     end
   end
-
-  # describe "when being inherited from another class" do
-  #   before do
-  #
-  #   end
-  #   after do
-  # end
 end
