@@ -26,7 +26,7 @@ module Asynchronize
         @methods_to_async.merge(methods)
         methods.each do |method|
           # If it's not defined yet, we'll get it with method_added
-          Asynchronize.create_new_method(method, self) unless method_defined?(method)
+          Asynchronize.create_new_method(method, self) if method_defined?(method)
         end
       end
 
