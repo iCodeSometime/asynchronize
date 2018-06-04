@@ -106,9 +106,9 @@ language features easier to use with less typing. Just define a regular method,
 then interact with it's result like a regular thread.
 
 ### What versions are supported?
-In theory, this should work for all versions of Ruby. So far, Travis runs tests
-for MRI 2.2.2 and 2.5.1 as well as jruby 9.2.1 (ruby version 2.5.0). I plan on
-verifying and adding older versions and other implementations as I am able.
+In theory, this should work for all versions of Ruby. So far, Travis only tests
+for MRI 2.2.2 and 2.5.1. I plan on verifying and adding older versions and other
+implementations as I am able.
 
 ## License
 MIT
