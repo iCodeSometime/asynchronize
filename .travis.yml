@@ -5,7 +5,7 @@ language: ruby
 rvm:
   - 2.5.1
   - 2.2.2
-  - jruby-head
+  - jruby-9.2.1
 git:
   depth: false
 before_script:
