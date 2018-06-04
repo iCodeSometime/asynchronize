@@ -88,7 +88,7 @@ We check for and alias your old method_added. It will be called before
 anything else. Of course, if you define method_added after including
 Asynchronize, you have to do the same and be careful to not overwrite ours!
 
-### Why do I need another framework? My code's bloated enough as it is?
+### Why do I need another gem? My code's bloated enough as it is?
 It's super tiny. Just a light wrapper around the existing language features.
 Seriously, it's just around fifty lines of code. Actually, according to
 [cloc](https://www.npmjs.com/package/cloc) there's almost four times as many
