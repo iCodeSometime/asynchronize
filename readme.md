@@ -58,7 +58,7 @@ problems I didn't have. Now, just call asynchronize to make any method
 asynchronous.
 
 ## Versioning Policy
-Once I feel like this is ready for production code - version 1.0.0, this project
+Once I feel like this is ready for production code, version 1.0.0, this project
 will follow [Semantic Versioning](https://semver.org) until then, the patch
 number (0.0.x) will be updated for any changes that do not affect the public
 interface. Versions that increment the minor number will have at least one of
