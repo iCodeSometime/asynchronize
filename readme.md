@@ -99,10 +99,16 @@ Absolutely! If your use case isn't compatible with the project, you find a
 bug, or just want to donate some tests; make an issue or send a PR please.
 To run the test suite, just run `bundle` then `rake` from the project directory.
 
-### What's the difference between this and promises?
-This attempts to be a very lightweight wrapper around threads. There's no new
-interface to use, just define a regular method, and interact with it like a
-regular thread.
+### What's the difference between asynchronize and promises/async..await?
+Those projects and similar ones aim to create an entirely new abstraction to use
+for doing things asynchronously. This project simply aims to make the existing
+language features easier to use with less typing. Just define a regular method,
+then interact with it's result like a regular thread.
+
+### What versions are supported?
+In theory, this should work for all versions of Ruby. So far, Travis runs tests
+for MRI 2.2.2 and 2.5.1 as well as jruby 9.2.1 (ruby version 2.5.0). I plan on
+verifying and adding older versions and other implementations as I am able.
 
 ## License
 MIT
