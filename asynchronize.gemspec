@@ -2,7 +2,7 @@ require 'date'
 
 Gem::Specification.new do |s|
   s.name = 'asynchronize'
-  s.version = '0.1.2'
+  s.version = '0.2.0'
   s.date = Date.today.to_s
   s.summary = 'Easily make multiple methods asynchronous with one line of code.'
   s.description = 'Take any synchronous method, and run it asynchronously, ' +
@@ -13,9 +13,8 @@ Gem::Specification.new do |s|
     'lib/asynchronize.rb',
     'spec/spec.rb',
     'spec/minitest_helper.rb',
-    'asynchronize.gemspec',
-    'Rakefile',
     'readme.md',
+    'LICENSE',
   ]
   s.test_files = [
     'spec/spec.rb',

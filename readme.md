@@ -58,7 +58,7 @@ problems I didn't have. Now, just call asynchronize to make any method
 asynchronous.
 
 ## Versioning Policy
-Once I feel like this is ready for production code - version 1.0.0, this project
+Once I feel like this is ready for production code, version 1.0.0, this project
 will follow [Semantic Versioning](https://semver.org) until then, the patch
 number (0.0.x) will be updated for any changes that do not affect the public
 interface. Versions that increment the minor number will have at least one of
@@ -91,18 +91,24 @@ Asynchronize, you have to do the same and be careful to not overwrite ours!
 ### Why do I need another framework? My code's bloated enough as it is?
 It's super tiny. Just a light wrapper around the existing language features.
 Seriously, it's just around fifty lines of code. Actually, according to
-[cloc](https://www.npmjs.com/package/cloc) there's twice as many lines in the
-tests as the source. You should read it, I'd love feedback!
+[cloc](https://www.npmjs.com/package/cloc) there's almost four times as many
+lines in the tests as the source. You should read it, I'd love feedback!
 
 ### Do you accept contributions?
 Absolutely! If your use case isn't compatible with the project, you find a
 bug, or just want to donate some tests; make an issue or send a PR please.
 To run the test suite, just run `bundle` then `rake` from the project directory.
 
-### What's the difference between this and promises?
-This attempts to be a very lightweight wrapper around threads. There's no new
-interface to use, just define a regular method, and interact with it like a
-regular thread.
+### What's the difference between asynchronize and promises/async..await?
+Those projects and similar ones aim to create an entirely new abstraction to use
+for doing things asynchronously. This project simply aims to make the existing
+language features easier to use with less typing. Just define a regular method,
+then interact with it's result like a regular thread.
+
+### What versions are supported?
+In theory, this should work for all versions of Ruby. So far, Travis runs tests
+for MRI 2.2.2 and 2.5.1 as well as jruby 9.2.1 (ruby version 2.5.0). I plan on
+verifying and adding older versions and other implementations as I am able.
 
 ## License
 MIT
