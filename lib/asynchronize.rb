@@ -30,11 +30,10 @@ module Asynchronize
       #   asynchronize :method1, :method2, :methodn
       #
       def self.asynchronize(*methods)
-        @methods_to_async.merge(methods)
+        @methods_to_async.merge(methods.map {|m| m.hash})
         methods.each do |method|
           # If it's not defined yet, handle later with method_added.
-          next unless method_defined?(method)
-          Asynchronize.create_new_method(method, self)
+          Asynchronize.create_new_method(method, self) if method_defined?(method)
         end
       end
 
@@ -60,10 +59,10 @@ module Asynchronize
         # Return if this is an inherited class that hasn't included asynchronize
         return if @methods_asyncing.nil?
         # Return if we're already processing this method
-        return if @methods_asyncing.include?(method)
-        @methods_asyncing.add(method)
+        return if @methods_asyncing.include?(method.hash)
+        @methods_asyncing.add(method.hash)
         self.old_method_added(method) if self.methods.include?(:old_method_added)
-        return unless @methods_to_async.include?(method)
+        return unless @methods_to_async.include?(method.hash)
         # This will delete from @methods_asyncing
         Asynchronize.create_new_method(method, self)
       end
@@ -76,13 +75,13 @@ module Asynchronize
   def self.create_new_method(method, klass)
     klass.instance_eval do
       old_method = instance_method(method)
-      # Old method name being stored would break if method was redefined.
-      return if @asynced_methods.include?(old_method)
+      return if @asynced_methods.include?(old_method.hash)
       undef_method(method)
-      @methods_asyncing.add(method)
+      
+      @methods_asyncing.add(method.hash)
       define_method(method, Asynchronize._build_new_method(old_method))
-      @methods_asyncing.delete(method)
-      @asynced_methods.add(instance_method(method))
+      @methods_asyncing.delete(method.hash)
+      @asynced_methods.add(instance_method(method).hash)
     end
   end
 
