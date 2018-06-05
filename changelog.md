@@ -10,3 +10,6 @@ classes that defined method_added before including asynchronize.
 - Inheriting from a class that includes asynchronize no longer automatically
 asynchronizes methods that override asynchronized methods in the parent class.
 - various other bug fixes
+
+## 0.2.1
+- Memory usage optimizations
