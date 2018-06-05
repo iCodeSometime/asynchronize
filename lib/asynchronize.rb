@@ -44,12 +44,12 @@ module Asynchronize
   def self._define_methods_on_object(methods, obj)
     methods.each do |method|
       next if obj.methods.include?(method)
-      obj.define_method(method, _build_thread)
+      obj.define_method(method, _build_method)
     end
   end
 
   # Always builds the exact same proc. Placed into a named method for clarity.
-  def self._build_thread
+  def self._build_method
     return Proc.new do |*args, &block|
       return Thread.new(args, block) do |targs, tblock|
         Thread.current[:return_value] = super(*targs)
