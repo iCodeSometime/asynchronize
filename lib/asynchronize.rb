@@ -32,12 +32,19 @@ module Asynchronize
     end
   end
 
+  ##
+  # Defines an asynchronous wrapping method with the given name on an object.
+  #
+  #   Always defines each method unless that method is already defined on obj;
+  #   in that case, it will continue to define the remainder of the methods.
+  #
+  # @param methods [Array<Symbol>] The methods to be created.
+  # @param obj [Object] The object for the methods to be created on.
   private
   def self._define_methods_on_object(methods, obj)
     methods.each do |method|
       next if obj.methods.include?(method)
       obj.define_method(method) do |*args, &block|
-
         return Thread.new(args, block) do |targs, tblock|
           Thread.current[:return_value] = super(*targs)
           tblock.call(Thread.current[:return_value]) if tblock
