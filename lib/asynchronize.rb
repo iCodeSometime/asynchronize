@@ -17,7 +17,7 @@ module Asynchronize
       #
       def self.asynchronize(*methods)
         # require 'pry'; binding.pry
-        module_name = self.name.split('::')[-1] + 'Asynchronized'
+        module_name = self.name.split('::').last + 'Asynchronized'
         if const_defined?(module_name)
           async_container = const_get(module_name)
         else
@@ -40,11 +40,12 @@ module Asynchronize
   #
   # @param methods [Array<Symbol>] The methods to be created.
   # @param obj [Object] The object for the methods to be created on.
+  #
   private
   def self._define_methods_on_object(methods, obj)
     methods.each do |method|
       next if obj.methods.include?(method)
-      obj.define_method(method, _build_method)
+      obj.send(:define_method, method, _build_method)
     end
   end
 
