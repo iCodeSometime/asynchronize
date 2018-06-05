@@ -5,8 +5,8 @@ module Asynchronize
       ##
       # Call to asynchronize a method.
       #
-      #   Calling this does two things
-      #   1. Creates and prepends a module named class + Asynchronized
+      #   This does two things
+      #   1. Creates and prepends a module named "<className> + Asynchronized"
       #   2. Defines each of the passed methods on that module.
       #
       #   - The new methods wrap the old method within Thread.new.
