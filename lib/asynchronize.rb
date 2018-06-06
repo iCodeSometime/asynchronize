@@ -16,14 +16,10 @@ module Asynchronize
       #   asynchronize :method1, :method2, :methodn
       #
       def self.asynchronize(*methods)
+        async_container = Asynchronize.get_container_for(self)
         # require 'pry'; binding.pry
-        module_name = Asynchronize.get_container_name(self.name)
-        if const_defined?(module_name)
-          async_container = const_get(module_name)
-        else
-          async_container = const_set(module_name, Module.new)
-          prepend async_container
-        end
+        # puts async_container ## => Asynchronize::TestAsynchronized
+
 
         async_container.instance_eval do
           Asynchronize._define_methods_on_object(methods, self)
@@ -74,6 +70,24 @@ module Asynchronize
   end
   
   ##
+  # Container setup
+  #  
+  #  Does several things
+  #  - stores a call for the object name
+  #
+  def self.get_container_for(obj)
+    module_name = Asynchronize.get_container_name(obj.name) 
+    if const_defined?(module_name) 
+      async_container = const_get(module_name)
+    else
+      async_container = const_set(module_name, Module.new)
+      prepend async_container
+    end
+    return async_container
+  end
+  
+  
+  ##
   # Get Container Name
   #  
   #  Does two things
@@ -81,6 +95,6 @@ module Asynchronize
   #  - Appends 'Asynchronized'
   #
   def self.get_container_name(name)
-    name.split('::').last + 'Asynchronized'
+    name = name.split('::').last + 'Asynchronized'
   end
 end
