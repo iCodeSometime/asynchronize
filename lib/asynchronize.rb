@@ -16,11 +16,8 @@ module Asynchronize
       #   asynchronize :method1, :method2, :methodn
       #
       def self.asynchronize(*methods)
-        async_container = Asynchronize.get_container_for(self)
         # require 'pry'; binding.pry
-        # puts async_container ## => Asynchronize::TestAsynchronized
-
-
+        async_container = Asynchronize.get_container_for(self)
         async_container.instance_eval do
           Asynchronize._define_methods_on_object(methods, self)
         end
@@ -73,17 +70,21 @@ module Asynchronize
   # Container setup
   #  
   #  Does several things
-  #  - stores a call for the object name
-  #
+  #  - Stores a call for the object name
+  #  - If module defined, stores it in container
+  #  - If module not defined, creates it & adds as earliest in the inheritance 
+  #   
   def self.get_container_for(obj)
-    module_name = Asynchronize.get_container_name(obj.name) 
-    if const_defined?(module_name) 
-      async_container = const_get(module_name)
+    module_name = get_container_name(obj.name)
+
+    if obj.const_defined?(module_name) 
+      async_container = obj.const_get(module_name)
     else
-      async_container = const_set(module_name, Module.new)
-      prepend async_container
+      async_container = obj.const_set(module_name, Module.new)
+      obj.prepend async_container
     end
-    return async_container
+    
+    return async_container # required return as prepend is last operation
   end
   
   
