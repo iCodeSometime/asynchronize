@@ -64,27 +64,12 @@ module Asynchronize
   #   - If the container module is not defined, create, prepend, and return it.
   #
   def self.get_container_for(obj)
-    module_name = get_container_name(obj.name)
-
-    if obj.const_defined?(module_name) 
-      async_container = obj.const_get(module_name)
+    if obj.const_defined?('Asynchronized')
+      return obj.const_get('Asynchronized')
     else
-      async_container = obj.const_set(module_name, Module.new)
+      async_container = obj.const_set('Asynchronized', Module.new)
       obj.prepend async_container
+      return async_container
     end
-    
-    return async_container # required return as prepend is last operation
-  end
-  
-  
-  ##
-  # Get Container Name
-  #  
-  #   Does two things
-  #   1. Trims all but the last child on the namespace
-  #   2. Appends 'Asynchronized'
-  #
-  def self.get_container_name(name)
-    name = name.split('::').last + 'Asynchronized'
   end
 end
