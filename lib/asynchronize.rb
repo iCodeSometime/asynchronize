@@ -16,7 +16,6 @@ module Asynchronize
       #   asynchronize :method1, :method2, :methodn
       #
       def self.asynchronize(*methods)
-        # require 'pry'; binding.pry
         async_container = Asynchronize.get_container_for(self)
         async_container.instance_eval do
           Asynchronize._define_methods_on_object(methods, self)
@@ -25,22 +24,14 @@ module Asynchronize
     end
   end
 
-  ##
-  # Defines an asynchronous wrapping method with the given name on an object.
-  #
-  #   Always defines each given method unless it is already defined on obj;
-  #   in that case, it will continue to define the remainder of the methods.
-  #
-  # @param methods [Array<Symbol>] The methods to be created.
-  # @param obj [Object] The object for the methods to be created on.
-  #
   private
-  
   ##
   # Define methods on object
   #
-  #   1. If method already defined, do nothing.
-  #   2. If method does not exist, call to build it on object.
+  #   For each method in the array
+  #
+  #   - If method already defined, go to the next.
+  #   - If method does not exist, create it and go to the next.
   #
   # @param methods [Array<Symbol>] The methods to be bound.
   # @param obj [Object] The object for the methods to be defined on.
@@ -55,7 +46,7 @@ module Asynchronize
   ##
   #  Build Method
   #
-  #    Always builds exact same proc. Placed into a named method for clarity.
+  #    The actual method that will be defined when calling asynchronize.
   #
   def self._build_method
     return Proc.new do |*args, &block|
@@ -65,15 +56,13 @@ module Asynchronize
       end
     end
   end
-  
+
   ##
   # Container setup
-  #  
-  #   Does several things
-  #   1. Stores a call for the object name
-  #   2. If module defined, stores it in container
-  #   3. If module not defined, creates it & adds as earliest in the inheritance 
-  #   
+  #
+  #   - If the container module is defined, return it.
+  #   - If the container module is not defined, create, prepend, and return it.
+  #
   def self.get_container_for(obj)
     module_name = get_container_name(obj.name)
 
