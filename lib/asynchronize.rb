@@ -39,8 +39,8 @@ module Asynchronize
   ##
   #  Define methods on object
   #
-  #    1) If method already defined, do nothing.
-  #    2) If method does not exist, call to build it on object.
+  #    1. If method already defined, do nothing.
+  #    2. If method does not exist, call to build it on object.
   #
   #   @param methods [Array<Symbol>] The methods to be bound.
   #   @param obj [Object] The object for the methods to be defined on.
@@ -55,7 +55,7 @@ module Asynchronize
   ##
   #  Build Method
   #
-  #    Always builds  exact same proc. Placed into a named method for clarity.
+  #    Always builds exact same proc. Placed into a named method for clarity.
   #
   def self._build_method
     return Proc.new do |*args, &block|
@@ -70,9 +70,9 @@ module Asynchronize
   # Container setup
   #  
   #  Does several things
-  #  - Stores a call for the object name
-  #  - If module defined, stores it in container
-  #  - If module not defined, creates it & adds as earliest in the inheritance 
+  #  1. Stores a call for the object name
+  #  2. If module defined, stores it in container
+  #  3. If module not defined, creates it & adds as earliest in the inheritance 
   #   
   def self.get_container_for(obj)
     module_name = get_container_name(obj.name)
@@ -92,8 +92,8 @@ module Asynchronize
   # Get Container Name
   #  
   #  Does two things
-  #  - Trims all but the last child on the namespace
-  #  - Appends 'Asynchronized'
+  #  1. Trims all but the last child on the namespace
+  #  2. Appends 'Asynchronized'
   #
   def self.get_container_name(name)
     name = name.split('::').last + 'Asynchronized'
