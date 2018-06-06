@@ -17,7 +17,8 @@ module Asynchronize
       #
       def self.asynchronize(*methods)
         # require 'pry'; binding.pry
-        module_name = self.name.split('::').last + 'Asynchronized'
+        # module_name = self.name.split('::').last + 'Asynchronized'
+        module_name = Asynchronize.get_container_name(self.name)
         if const_defined?(module_name)
           async_container = const_get(module_name)
         else
@@ -30,6 +31,8 @@ module Asynchronize
         end
       end
     end
+    
+
   end
 
   ##
@@ -59,5 +62,16 @@ module Asynchronize
         thread_block.call(Thread.current[:return_value]) if thread_block
       end
     end
+  end
+  
+  ##
+  # Get Container Name
+  #  
+  #  Does two things
+  #  - Trims all but the last child on the namespace
+  #  - Appends 'Asynchronized'
+  #
+  def self.get_container_name(name)
+    name.split('::').last + 'Asynchronized'
   end
 end
