@@ -1,83 +1,86 @@
 module Asynchronize
-  require 'set'
   def self.included(base)
     base.class_eval do
-      # The methods we have already asynchronized
-      @asynced_methods = Set.new
-      # The methods that should be asynchronized.
-      @methods_to_async = Set.new
-      # Originally used a single value here, but that's not thread safe.
-      # ...Though you probably have other problems if you have multiple
-      # threads adding methods to your class.
-      @methods_asyncing = Set.new
-
       ##
       # Call to asynchronize a method.
-      #   That method will be added to a list of methods to asynchronize.
-      #   If the method already exists, it will be redefined to an asynchronous
-      #   version. If it does not, method_missing will redefine it when it does.
-      #   If the method is redefined afterwards, method_missing will also
-      #   asynchronize that version.
       #
-      # @param methods [Symbol] The methods to be asynchronized.
-      # @example To add any number of methods to be asynchronized.
+      #   This does two things
+      #   1. Creates and prepends a module named "<className> + Asynchronized"
+      #   2. Defines each of the passed methods on that module.
+      #
+      #   - The new methods wrap the old method within Thread.new.
+      #   - Subsequent calls only add methods to the existing Module.
+      #
+      #   @param methods [Symbol] The methods to be asynchronized.
+      #   @example To add any number of methods to be asynchronized.
       #   asynchronize :method1, :method2, :methodn
+      #
       def self.asynchronize(*methods)
-        @methods_to_async.merge(methods.map {|m| m.hash})
-        methods.each do |method|
-          # If it's not defined yet, we'll get it with method_added
-          Asynchronize.create_new_method(method, self) if method_defined?(method)
+        # require 'pry'; binding.pry
+        module_name = Asynchronize.get_container_name(self.name)
+        if const_defined?(module_name)
+          async_container = const_get(module_name)
+        else
+          async_container = const_set(module_name, Module.new)
+          prepend async_container
         end
-      end
 
-      # Save the old method_added so we don't overwrite it.
-      if self.methods.include?(:method_added)
-        singleton_class.send(:alias_method, :old_method_added, :method_added)
-        singleton_class.send(:undef_method, :method_added)
-      end
-
-      ##
-      # Will asynchronize a method if it has not been asynchronized already, and
-      #   it is in the list of methods to asynchronize. If method missing was
-      #   already defined, it will call the previous method_missing before
-      #   anything else Ruby calls this automatically when defining a method; it
-      #   should not be called directly.
-      def self.method_added(method)
-        # Return if this is an inherited class that hasn't included asynchronize
-        return if @methods_asyncing.nil?
-        # Return if we're already processing this method
-        return if @methods_asyncing.include?(method.hash)
-        @methods_asyncing.add(method.hash)
-        self.old_method_added(method) if self.methods.include?(:old_method_added)
-        return unless @methods_to_async.include?(method.hash)
-        # This will delete from @methods_asyncing
-        Asynchronize.create_new_method(method, self)
+        async_container.instance_eval do
+          Asynchronize._define_methods_on_object(methods, self)
+        end
       end
     end
   end
 
   ##
-  # Responsible for actually creating the new methods and removing the old.
-  def self.create_new_method(method, klass)
-    klass.instance_eval do
-      old_method = instance_method(method)
-      return if @asynced_methods.include?(old_method.hash)
-      undef_method(method)
-
-      @methods_asyncing.add(method.hash)
-      define_method(method, Asynchronize._build_new_method(old_method))
-      @methods_asyncing.delete(method.hash)
-      @asynced_methods.add(instance_method(method).hash)
+  # Defines an asynchronous wrapping method with the given name on an object.
+  #
+  #   Always defines each given method unless it is already defined on obj;
+  #   in that case, it will continue to define the remainder of the methods.
+  #
+  #   @param methods [Array<Symbol>] The methods to be created.
+  #   @param obj [Object] The object for the methods to be created on.
+  #
+  private
+  
+  ##
+  #  Define methods on object
+  #
+  #    1) If method already defined, do nothing.
+  #    2) If method does not exist, call to build it on object.
+  #
+  #   @param methods [Array<Symbol>] The methods to be bound.
+  #   @param obj [Object] The object for the methods to be defined on.
+  #
+  def self._define_methods_on_object(methods, obj)
+    methods.each do |method|
+      next if obj.methods.include?(method)
+      obj.send(:define_method, method, _build_method)
     end
   end
 
-  private
-  def self._build_new_method(old_method)
+  ##
+  #  Build Method
+  #
+  #    Always builds  exact same proc. Placed into a named method for clarity.
+  #
+  def self._build_method
     return Proc.new do |*args, &block|
-      return Thread.new(old_method, args, block) do |told_method, targs, tblock|
-        Thread.current[:return_value] = told_method.bind(self).call(*targs)
-        tblock.call(Thread.current[:return_value]) unless tblock.nil?
+      return Thread.new(args, block) do |thread_args, thread_block|
+        Thread.current[:return_value] = super(*thread_args)
+        thread_block.call(Thread.current[:return_value]) if thread_block
       end
     end
+  end
+  
+  ##
+  # Get Container Name
+  #  
+  #  Does two things
+  #  - Trims all but the last child on the namespace
+  #  - Appends 'Asynchronized'
+  #
+  def self.get_container_name(name)
+    name.split('::').last + 'Asynchronized'
   end
 end
