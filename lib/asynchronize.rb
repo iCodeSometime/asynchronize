@@ -30,8 +30,6 @@ module Asynchronize
         end
       end
     end
-    
-
   end
 
   ##
@@ -44,6 +42,16 @@ module Asynchronize
   #   @param obj [Object] The object for the methods to be created on.
   #
   private
+  
+  ##
+  #  Define methods on object
+  #
+  #    1) If method already defined, do nothing.
+  #    2) If method does not exist, call to build it on object.
+  #
+  #   @param methods [Array<Symbol>] The methods to be bound.
+  #   @param obj [Object] The object for the methods to be defined on.
+  #
   def self._define_methods_on_object(methods, obj)
     methods.each do |method|
       next if obj.methods.include?(method)
@@ -52,7 +60,9 @@ module Asynchronize
   end
 
   ##
-  # Always builds the exact same proc. Placed into a named method for clarity.
+  #  Build Method
+  #
+  #    Always builds  exact same proc. Placed into a named method for clarity.
   #
   def self._build_method
     return Proc.new do |*args, &block|
