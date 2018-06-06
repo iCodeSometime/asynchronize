@@ -11,13 +11,13 @@ module Asynchronize
       #   - The new methods wrap the old method within Thread.new.
       #   - Subsequent calls only add methods to the existing Module.
       #
-      # @param methods [Symbol] The methods to be asynchronized.
-      # @example To add any number of methods to be asynchronized.
+      #   @param methods [Symbol] The methods to be asynchronized.
+      #   @example To add any number of methods to be asynchronized.
       #   asynchronize :method1, :method2, :methodn
       #
       def self.asynchronize(*methods)
         # require 'pry'; binding.pry
-        module_name = self.name.split('::').last + 'Asynchronized'
+        module_name = Asynchronize.get_container_name(self.name)
         if const_defined?(module_name)
           async_container = const_get(module_name)
         else
@@ -30,6 +30,8 @@ module Asynchronize
         end
       end
     end
+    
+
   end
 
   ##
@@ -38,8 +40,8 @@ module Asynchronize
   #   Always defines each given method unless it is already defined on obj;
   #   in that case, it will continue to define the remainder of the methods.
   #
-  # @param methods [Array<Symbol>] The methods to be created.
-  # @param obj [Object] The object for the methods to be created on.
+  #   @param methods [Array<Symbol>] The methods to be created.
+  #   @param obj [Object] The object for the methods to be created on.
   #
   private
   def self._define_methods_on_object(methods, obj)
@@ -49,13 +51,26 @@ module Asynchronize
     end
   end
 
+  ##
   # Always builds the exact same proc. Placed into a named method for clarity.
+  #
   def self._build_method
     return Proc.new do |*args, &block|
-      return Thread.new(args, block) do |targs, tblock|
-        Thread.current[:return_value] = super(*targs)
-        tblock.call(Thread.current[:return_value]) if tblock
+      return Thread.new(args, block) do |thread_args, thread_block|
+        Thread.current[:return_value] = super(*thread_args)
+        thread_block.call(Thread.current[:return_value]) if thread_block
       end
     end
+  end
+  
+  ##
+  # Get Container Name
+  #  
+  #  Does two things
+  #  - Trims all but the last child on the namespace
+  #  - Appends 'Asynchronized'
+  #
+  def self.get_container_name(name)
+    name.split('::').last + 'Asynchronized'
   end
 end
