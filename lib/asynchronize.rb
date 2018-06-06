@@ -11,8 +11,8 @@ module Asynchronize
       #   - The new methods wrap the old method within Thread.new.
       #   - Subsequent calls only add methods to the existing Module.
       #
-      #   @param methods [Symbol] The methods to be asynchronized.
-      #   @example To add any number of methods to be asynchronized.
+      # @param methods [Symbol] The methods to be asynchronized.
+      # @example To add any number of methods to be asynchronized.
       #   asynchronize :method1, :method2, :methodn
       #
       def self.asynchronize(*methods)
@@ -31,19 +31,19 @@ module Asynchronize
   #   Always defines each given method unless it is already defined on obj;
   #   in that case, it will continue to define the remainder of the methods.
   #
-  #   @param methods [Array<Symbol>] The methods to be created.
-  #   @param obj [Object] The object for the methods to be created on.
+  # @param methods [Array<Symbol>] The methods to be created.
+  # @param obj [Object] The object for the methods to be created on.
   #
   private
   
   ##
-  #  Define methods on object
+  # Define methods on object
   #
-  #    1. If method already defined, do nothing.
-  #    2. If method does not exist, call to build it on object.
+  #   1. If method already defined, do nothing.
+  #   2. If method does not exist, call to build it on object.
   #
-  #   @param methods [Array<Symbol>] The methods to be bound.
-  #   @param obj [Object] The object for the methods to be defined on.
+  # @param methods [Array<Symbol>] The methods to be bound.
+  # @param obj [Object] The object for the methods to be defined on.
   #
   def self._define_methods_on_object(methods, obj)
     methods.each do |method|
@@ -69,10 +69,10 @@ module Asynchronize
   ##
   # Container setup
   #  
-  #  Does several things
-  #  1. Stores a call for the object name
-  #  2. If module defined, stores it in container
-  #  3. If module not defined, creates it & adds as earliest in the inheritance 
+  #   Does several things
+  #   1. Stores a call for the object name
+  #   2. If module defined, stores it in container
+  #   3. If module not defined, creates it & adds as earliest in the inheritance 
   #   
   def self.get_container_for(obj)
     module_name = get_container_name(obj.name)
@@ -91,9 +91,9 @@ module Asynchronize
   ##
   # Get Container Name
   #  
-  #  Does two things
-  #  1. Trims all but the last child on the namespace
-  #  2. Appends 'Asynchronized'
+  #   Does two things
+  #   1. Trims all but the last child on the namespace
+  #   2. Appends 'Asynchronized'
   #
   def self.get_container_name(name)
     name = name.split('::').last + 'Asynchronized'
