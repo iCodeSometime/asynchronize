@@ -17,7 +17,6 @@ module Asynchronize
       #
       def self.asynchronize(*methods)
         # require 'pry'; binding.pry
-        # module_name = self.name.split('::').last + 'Asynchronized'
         module_name = Asynchronize.get_container_name(self.name)
         if const_defined?(module_name)
           async_container = const_get(module_name)
