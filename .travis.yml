@@ -4,7 +4,7 @@ env:
 language: ruby
 rvm:
   - 2.5.1
-  - 2.2.2
+  - 2.3
   - jruby-9.1.13.0
 git:
   depth: false
