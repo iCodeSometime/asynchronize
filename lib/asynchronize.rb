@@ -17,14 +17,7 @@ module Asynchronize
       #
       def self.asynchronize(*methods)
         # require 'pry'; binding.pry
-        module_name = self.name.split('::').last + 'Asynchronized'
-        if const_defined?(module_name)
-          async_container = const_get(module_name)
-        else
-          async_container = const_set(module_name, Module.new)
-          prepend async_container
-        end
-
+        async_container = Asynchronize.get_container_for(self)
         async_container.instance_eval do
           Asynchronize._define_methods_on_object(methods, self)
         end
@@ -42,6 +35,16 @@ module Asynchronize
   # @param obj [Object] The object for the methods to be created on.
   #
   private
+  
+  ##
+  # Define methods on object
+  #
+  #   1. If method already defined, do nothing.
+  #   2. If method does not exist, call to build it on object.
+  #
+  # @param methods [Array<Symbol>] The methods to be bound.
+  # @param obj [Object] The object for the methods to be defined on.
+  #
   def self._define_methods_on_object(methods, obj)
     methods.each do |method|
       next if obj.methods.include?(method)
@@ -49,13 +52,50 @@ module Asynchronize
     end
   end
 
-  # Always builds the exact same proc. Placed into a named method for clarity.
+  ##
+  #  Build Method
+  #
+  #    Always builds exact same proc. Placed into a named method for clarity.
+  #
   def self._build_method
     return Proc.new do |*args, &block|
-      return Thread.new(args, block) do |targs, tblock|
-        Thread.current[:return_value] = super(*targs)
-        tblock.call(Thread.current[:return_value]) if tblock
+      return Thread.new(args, block) do |thread_args, thread_block|
+        Thread.current[:return_value] = super(*thread_args)
+        thread_block.call(Thread.current[:return_value]) if thread_block
       end
     end
+  end
+  
+  ##
+  # Container setup
+  #  
+  #   Does several things
+  #   1. Stores a call for the object name
+  #   2. If module defined, stores it in container
+  #   3. If module not defined, creates it & adds as earliest in the inheritance 
+  #   
+  def self.get_container_for(obj)
+    module_name = get_container_name(obj.name)
+
+    if obj.const_defined?(module_name) 
+      async_container = obj.const_get(module_name)
+    else
+      async_container = obj.const_set(module_name, Module.new)
+      obj.prepend async_container
+    end
+    
+    return async_container # required return as prepend is last operation
+  end
+  
+  
+  ##
+  # Get Container Name
+  #  
+  #   Does two things
+  #   1. Trims all but the last child on the namespace
+  #   2. Appends 'Asynchronized'
+  #
+  def self.get_container_name(name)
+    name = name.split('::').last + 'Asynchronized'
   end
 end
