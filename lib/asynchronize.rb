@@ -5,8 +5,9 @@ module Asynchronize
       # Call to asynchronize a method.
       #
       #   This does two things
-      #   1. Creates and prepends a module named "<className> + Asynchronized"
-      #   2. Defines each of the passed methods on that module.
+      #   1. Creates and prepends a module named Asynchronized.
+      #   2. Scopes that module to the calling class.
+      #   3. Defines each of the passed methods on that module.
       #
       #   - The new methods wrap the old method within Thread.new.
       #   - Subsequent calls only add methods to the existing Module.
@@ -16,7 +17,7 @@ module Asynchronize
       #   asynchronize :method1, :method2, :methodn
       #
       def self.asynchronize(*methods)
-        async_container = Asynchronize.get_container_for(self)
+        async_container = Asynchronize._get_container_for(self)
         async_container.instance_eval do
           Asynchronize._define_methods_on_object(methods, self)
         end
@@ -28,7 +29,7 @@ module Asynchronize
   ##
   # Define methods on object
   #
-  #   For each method in the array
+  #   For each method in the methods array
   #
   #   - If method already defined, go to the next.
   #   - If method does not exist, create it and go to the next.
@@ -44,9 +45,11 @@ module Asynchronize
   end
 
   ##
-  #  Build Method
+  # Build Method
   #
-  #    The actual method that will be defined when calling asynchronize.
+  #  This always returns the same Proc object. In it's own method for clarity.
+  #
+  # @return [Proc] The actual asynchronous method defined.
   #
   def self._build_method
     return Proc.new do |*args, &block|
@@ -60,10 +63,15 @@ module Asynchronize
   ##
   # Container setup
   #
+  #   Creates the container module that will hold our asynchronous wrappers.
+  #
   #   - If the container module is defined, return it.
   #   - If the container module is not defined, create, prepend, and return it.
   #
-  def self.get_container_for(obj)
+  # @param obj [Class] The Class to prepend our module to
+  # @return [Module] The already prepended module to define our methods on.
+  #
+  def self._get_container_for(obj)
     if obj.const_defined?('Asynchronized')
       return obj.const_get('Asynchronized')
     else
