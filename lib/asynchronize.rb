@@ -17,6 +17,7 @@ module Asynchronize
       #   asynchronize :method1, :method2, :methodn
       #
       def self.asynchronize(*methods)
+        return if methods.empty?
         async_container = Asynchronize._get_container_for(self)
         async_container.instance_eval do
           Asynchronize._define_methods_on_object(methods, self)

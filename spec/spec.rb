@@ -122,5 +122,14 @@ class BasicSpec < Minitest::Test
         ChildClassTest.new.test.must_equal 6
       end
     end
+
+    describe "when asynchronize is called with no arguments" do
+      it "should not define an Asynchronized container" do
+        Test.asynchronize
+        Test.ancestors.find do |a|
+          a.name.split('::').include? 'Asynchronized'
+        end.must_be_nil
+      end
+    end
   end
 end
