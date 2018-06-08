@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   s.name = 'asynchronize'
   s.version = '0.3.0'
   s.date = Date.today.to_s
-  s.summary = 'A declarative syntax for creating threads.'
+  s.summary = 'A declarative syntax for creating multithreaded methods.'
   s.description = %w{Sometimes you just want a regular thread without the
                     overhead of a whole new layer of abstraction.
                     Asynchronize provides a declarative syntax to wrap any
