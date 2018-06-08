@@ -16,29 +16,15 @@ class BasicSpec < Minitest::Test
     end
 
     describe "when we asynchronize a method" do
-      it "should not be the same method" do
-        original_method = Test.instance_method :test
-        Test.asynchronize :test
-        new_method = Test.instance_method(:test)
-        original_method.wont_equal(new_method, "The method was not overwritten")
-      end
       it "should not return a thread unless we asynchronize it" do
         Test.new.test.class.wont_equal(Thread, "The method was not overwritten")
-      end
-      it "should be the same method if we call a second time" do
-        Test.asynchronize :test
-        original_method = Test.instance_method :test
-        Test.asynchronize :test
-        new_method = Test.instance_method :test
-        original_method.must_equal(new_method,
-          "Asynchronized Inception has occurred")
       end
       it "should not throw an error if the specified method does not exist" do
         Test.asynchronize :notamethod
       end
       it "should not create a method if the specified method does not exist" do
         Test.asynchronize :notamethod
-        Test.method_defined?(:notamethod).must_equal false
+        Test.methods(false).wont_include(:notamethod)
       end
       it "should not affect methods on other classes when called before" do
         Test.asynchronize :test
@@ -105,35 +91,6 @@ class BasicSpec < Minitest::Test
       end
     end
 
-    describe "when there is an existing method_added" do
-      before do
-        class MethodAddedTest
-          @running = false
-          def self.method_added(method)
-            return if @running
-            @running = true
-            old_method = instance_method(method)
-            undef_method(method)
-            define_method(method) do
-              return old_method.bind(self).call + 1
-            end
-            @running = false
-          end
-          include Asynchronize
-          asynchronize :test
-          def test
-            return 4
-          end
-        end
-      end
-      after do
-        BasicSpec.send(:remove_const, :MethodAddedTest)
-      end
-      it "should call that method_added before, and only once." do
-        MethodAddedTest.new.test.join[:return_value].must_equal 5
-      end
-    end
-
     describe "when inheriting from another class" do
       before do
         class ChildClassTest < Test
@@ -163,6 +120,15 @@ class BasicSpec < Minitest::Test
           end
         end
         ChildClassTest.new.test.must_equal 6
+      end
+    end
+
+    describe "when asynchronize is called with no arguments" do
+      it "should not define an Asynchronized container" do
+        Test.asynchronize
+        Test.ancestors.find do |a|
+          a.name.split('::').include? 'Asynchronized'
+        end.must_be_nil
       end
     end
   end
