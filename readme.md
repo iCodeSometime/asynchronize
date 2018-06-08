@@ -7,7 +7,8 @@
 Find yourself writing the same boilerplate for all your asynchronous methods?
 Get dry with asynchronize.
 
-Just install with `gem install asynchronize` or add to your Gemfile and `bundle`
+Just add to your Gemfile and `bundle` or install globally with
+`gem install asynchronize`
 
 ## Usage
 Create a class with asynchronized methods
@@ -15,7 +16,7 @@ Create a class with asynchronized methods
 require 'asynchronize'
 class Test
   include Asynchronize
-  # This can be called anywhere.
+  # Can be called before or after methods. I prefer it at the top of my class.
   asynchronize :my_test, :my_other_test
   def my_test
     return 'test'
@@ -35,16 +36,21 @@ thread.join
 puts thread[:return_value] # > test
 ```
 
-Or for convenience, you can just pass it a block.
-The return value, will still be in the thread variable `:return_value`
+Or to stay asynchronous when processing the result, you can pass it a block.
+It will still return the thread, and the return value will still be in the
+thread variable `:return_value`
 ```Ruby
 Test.new.my_test do |return_value|
   puts return_value # > test
 end
 ```
 
+As you can see, it's just a regular thread. Make sure you call `Thread#join` to
+make sure it completes before your process exits, and to catch any exceptions
+that were thrown!
+
 ## Inspiration
-I got tired of writing this over and over.
+While working on another project, I found myself writing this way too often:
 ```Ruby
 def method_name(args)
   Thread.new(args) do |targs|
@@ -52,63 +58,76 @@ def method_name(args)
   end
 end
 ```
-It's extra typing, adds an unneeded extra layer of nesting, and just feels
-dirty. I couldn't find an existing library that wasn't trying to solve other
-problems I didn't have. Now, just call asynchronize to make any method
-asynchronous.
+It's extra typing, and adds an unneeded extra layer of nesting. I couldn't find
+an existing library that wasn't trying add new layers of abstraction to
+memorize; sometimes you just want a normal thread. Now, just call asynchronize
+to make any method asynchronous.
 
 ## Versioning Policy
-Once I feel like this is ready for production code, version 1.0.0, this project
-will follow [Semantic Versioning](https://semver.org) until then, the patch
-number (0.0.x) will be updated for any changes that do not affect the public
-interface. Versions that increment the minor number will have at least one of
-the following. A new feature will be added, some feature will be deprecated, or
-some previously deprecated feature will be removed. Deprecated features will be
-removed on the very next version that increments the minor version number.
+
+Beginning with version 1.0.0, this project will follow [Semantic Versioning]
+(https://semver.org) until then, the patch number (0.0.x) will be
+updated for any changes that do not affect the public interface. Versions that
+increment the minor number will have at least one of the following. A new
+feature will be added, some feature will be deprecated, or some previously
+deprecated feature will be removed. Deprecated features will be removed on the
+very next version that increments the minor version number.
 
 ## FAQ
 ### Doesn't metaprogramming hurt performance?
-Not at all! We're actually totally redefining the methods, so the method itself
-is exactly as efficient as it would have been had you wrote it that way
-originally.
+Not at all! It actually works just like inheritance, so it won't be a problem.
 
 ### So, how does it work?
-When you `include Asynchronize` it does two things.
-1. It defines the asynchronize method for your class
-2. It defines method_added on your class.
+When you `include Asynchronize` it creates an `asynchronize` method on your
+class. The first time you call this method with any arguments, it creates a new
+module with the methods you define. It uses [Module#prepend]() to cause method
+calls on the original object to be sent to it instead, and uses super to call
+your original method.
 
-When you call asynchronize, it creates a set containing all of the methods you
-want asynchronized. If they already exist, they are modified; otherwise,
-method_added checks for them with every new method you add to the class. This
-way, you can call asynchronize any time, and know that the methods will be
-asynchronized when you use them.
-
-### So, does that mean I can't use asynchronize if I already use method_added?
-We check for and alias your old method_added. It will be called before
-anything else. Of course, if you define method_added after including
-Asynchronize, you have to do the same and be careful to not overwrite ours!
+This implementation allows you to call asynchronize at the top of the class and
+then define the methods below. Since it changes how you interact with those
+method's return values, I thought it was important to allow this.
 
 ### Why do I need another gem? My code's bloated enough as it is?
 It's super tiny. Just a light wrapper around the existing language features.
-Seriously, it's just around fifty lines of code. Actually, according to
-[cloc](https://www.npmjs.com/package/cloc) there's almost four times as many
-lines in the tests as the source. You should read it, I'd love feedback!
+Seriously, it's just around forty lines of code as of version 0.3.0. Actually,
+according to [cloc](https://www.npmjs.com/package/cloc) there's almost four
+times as many lines in the tests as the source. You should read it, I'd love
+feedback!
 
 ### Do you accept contributions?
-Absolutely! If your use case isn't compatible with the project, you find a
-bug, or just want to donate some tests; make an issue or send a PR please.
-To run the test suite, just run `bundle` then `rake` from the project directory.
+Absolutely!
+1. Fork it (https://github.com/kennycoc/asynchronize/fork)
+2. Create your feature branch (git checkout -b my-new-feature)
+3. Commit your changes (git commit -am 'Add some feature')
+4. Push to the branch (git push origin my-new-feature)
+5. Create a new pull request.
+
+It's just `bundle` to install dependencies, and `rake` to run the tests.
 
 ### What's the difference between asynchronize and promises/async..await?
-Those projects and similar ones aim to create an entirely new abstraction to use
-for doing things asynchronously. This project simply aims to make the existing
-language features easier to use with less typing. Just define a regular method,
+Those and other similar projects aim to create an entirely new abstraction to
+use for interacting with threads. This project aims to be a light convenience
+wrapper around the existing language features. Just define a regular method,
 then interact with it's result like a regular thread.
 
 ### What versions are supported?
-In theory, this should work for all versions of Ruby. So far, Travis only tests
-for MRI 2.2.2 and 2.5.1. I plan on verifying and adding older versions and other
-implementations as I am able.
+
+Unfortunately, Ruby versions prior to 2.0 do not support `Module#prepend` and are
+not supported. Ruby versions prior to 2.3 have a bug preventing usage of `super`
+with `define_method`. I'm unable to find a suitable workaround for this issue.
+(`method(__method__).super_method.call` causes problems when a method inherits
+from the asynchronized class.)
+
+Luckily, all major Ruby implementations support Ruby language version 2.3. So I
+don't see this as a huge issue. If anyone wants support for older versions, and
+knows how to workaround this issue, feel free to submit a pull request.
+
+We explicitly test against the following versions:
+ - Matz Ruby 2.5.1
+ - Matz Ruby 2.3.4
+ - JRuby 9.1.13
+ - Rubinius 3.8.4
 
 ## License
 MIT
