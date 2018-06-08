@@ -11,7 +11,7 @@ module Asynchronize
       # Call to asynchronize a method.
       #
       #   This does two things
-      #   1. Creates and prepends a module BaseName::Asynchronized.
+      #   1. Creates and prepends a module <BaseName>::Asynchronized.
       #   2. Defines each of the passed methods on that module.
       #
       #   Additional notes:
@@ -61,7 +61,8 @@ module Asynchronize
     return Proc.new do |*args, &block|
       return Thread.new(args, block) do |thread_args, thread_block|
         Thread.current[:return_value] = super(*thread_args)
-        thread_block.call(Thread.current[:return_value]) if thread_block
+        next thread_block.call(Thread.current[:return_value]) if thread_block
+        Thread.current[:return_value]
       end
     end
   end

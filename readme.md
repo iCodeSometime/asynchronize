@@ -16,10 +16,10 @@ Create a class with asynchronized methods
 require 'asynchronize'
 class Test
   include Asynchronize
-  # Can be called before or after the definitions. I prefer it at the top of classes.
+  # Can be called before or after method definitions. I prefer it at the top of classes.
   asynchronize :my_test, :my_other_test
   def my_test
-    return 'test'
+    return 'testing'
   end
   def my_other_test
     #do stuff here too
@@ -28,26 +28,29 @@ end
 ```
 
 Now, to call those methods.
-You can manage the thread yourself; the returned value will be in the thread
-variable `:return_value` once it returns.
-```Ruby
-thread = Test.new.my_test
-puts thread.join[:return_value] # > test
-```
-
-Or to stay asynchronous when processing the result, you can pass it a block.
-It will still return the thread, and the return value will still be in the
-thread variable `:return_value`
+You can pass a block, and access the return value as the block parameter. The
+return value from your block will be accessible at `Thread#value` and the return
+value from the original function will be accessible via the thread variable
+`:return_value`.
 ```Ruby
 thread = Test.new.my_test do |return_value|
-  puts return_value # > test
+  return return_value.length
 end
-thread.join[:return_value] # > also test
+thread.value          # > 7
+thread[:return_value] # > testing
 ```
 
-As you can see, it's just a regular thread. Make sure you call `Thread#join` to
-ensure it completes before your process exits, and to catch any exceptions that
-may have been thrown!
+Or, without a block `Thread#value` and `thread[:return_value]` both reference
+the return value of the original function.
+```Ruby
+thread = Test.new.my_test
+puts thread.value          # > testing
+puts thread[:return_value] # > testing
+```
+
+As you can see, it's just a regular thread. Make sure you call either
+`Thread#value` or`Thread#join` to ensure it completes before your process exits,
+and to catch any exceptions that may have been thrown!
 
 ## Inspiration
 While working on another project, I found myself writing this way too often:
@@ -59,22 +62,23 @@ def method_name(args)
 end
 ```
 It's extra typing, and adds an unneeded extra layer of nesting. I couldn't find
-an existing library that wasn't trying add new layers of abstraction to
-memorize; sometimes you just want a normal thread. Now, just call asynchronize
-to make any method asynchronous.
+an existing library that wasn't trying add new layers of abstraction I didn't
+need; sometimes you just want a normal thread. Now, just call asynchronize to
+make any method asynchronous.
 
 ## Versioning Policy
 Beginning with version 1.0.0, this project will follow [Semantic
-Versioning](https://semver.org) until then, the patch number (0.0.x) will be
+Versioning](https://semver.org). Until then, the patch number (0.0.x) will be
 updated for any changes that do not affect the public interface. Versions that
-increment the minor number will have at least one of the following. A new
+increment the minor number (0.x.0) will have at least one of the following. A new
 feature will be added, some feature will be deprecated, or some previously
 deprecated feature will be removed. Deprecated features will be removed on the
 very next version that increments the minor version number.
 
 ## FAQ
 ### Doesn't metaprogramming hurt performance?
-Not at all! It actually works just like inheritance, so it won't be a problem.
+Not at all! What we're doing in this project actually works exactly like
+inheritance, so it won't be a problem.
 
 ### So, how does it work?
 When you `include Asynchronize` it creates an `asynchronize` method on your
@@ -89,10 +93,9 @@ method's return values, I thought it was important to allow this.
 
 ### Why do I need another gem? My code's bloated enough as it is?
 It's super tiny. Just a light wrapper around the existing language features.
-Seriously, it's just around forty lines of code as of version 0.3.0. Actually,
-according to [cloc](https://www.npmjs.com/package/cloc) there's almost four
-times as many lines in the tests as the source. You should read it, I'd love
-feedback!
+Seriously, it's just around forty lines of code. Actually, according to
+[cloc](https://www.npmjs.com/package/cloc) there's almost four times as many
+lines in the tests as the source. You should read it, I'd love feedback!
 
 ### Do you accept contributions?
 Absolutely!

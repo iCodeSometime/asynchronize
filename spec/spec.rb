@@ -125,12 +125,19 @@ class BasicSpec < Minitest::Test
       end
     end
 
-    describe "when asynchronize is called with no arguments" do
-      it "should not define an Asynchronized container" do
+    describe "when asynchronize is called" do
+      it "should not define an Asynchronized container if there are no arguments" do
         Test.asynchronize
         Test.ancestors.find do |a|
           a.name.split('::').include? 'Asynchronized'
         end.must_be_nil
+      end
+      it "should not define two modules if we call it twice" do
+        Test.asynchronize :test
+        Test.asynchronize :another_test
+        Test.ancestors.select do |a|
+          a.name.split('::').include? 'Asynchronized'
+        end.length.must_equal 1
       end
     end
   end
