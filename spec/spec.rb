@@ -9,6 +9,9 @@ class BasicSpec < Minitest::Test
         def test(val=5)
           return val
         end
+        def another_test(val=5)
+          return val
+        end
       end
     end
     after do
@@ -111,15 +114,14 @@ class BasicSpec < Minitest::Test
       end
       it "should be able to call super when super has been asynchronized" do
         class Test
-          asynchronize :test
+          asynchronize :another_test
         end
         class ChildClassTest
-          undef_method :test
-          def test
+          def another_test
             return super.join[:return_value] + 1
           end
         end
-        ChildClassTest.new.test.must_equal 6
+        ChildClassTest.new.another_test.must_equal 6
       end
     end
 
