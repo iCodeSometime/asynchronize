@@ -126,8 +126,8 @@ knows how to workaround this issue, feel free to submit a pull request.
 We explicitly test against the following versions:
  - Matz Ruby 2.5.1
  - Matz Ruby 2.3.4
- - JRuby 9.1.13
- - Rubinius 3.8.4
+ - JRuby 9.1.13 (language version 2.3.3)
+ - Rubinius 3.105 (language version 2.3.1)
 
 ## License
 MIT
