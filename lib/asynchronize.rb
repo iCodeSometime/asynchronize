@@ -4,15 +4,15 @@
 #   Defines only one method on the including class: `asynchronize`
 #
 module Asynchronize
+  # Defines the asynchronize method
   def self.included(base)
     base.class_eval do
       ##
       # Call to asynchronize a method.
       #
       #   This does two things
-      #   1. Creates and prepends a module named Asynchronized.
-      #   2. Scopes that module to the calling class.
-      #   3. Defines each of the passed methods on that module.
+      #   1. Creates and prepends a module BaseName::Asynchronized.
+      #   2. Defines each of the passed methods on that module.
       #
       #   Additional notes:
       #   - The new methods wrap the old method within Thread.new.
@@ -74,7 +74,7 @@ module Asynchronize
   #   - If the container module is defined, return it.
   #   - If the container module is not defined, create, prepend, and return it.
   #
-  # @param obj [Class] The Class to prepend our module to
+  # @param obj [Class] The class the module should belong to.
   # @return [Module] The already prepended module to define our methods on.
   #
   def self._get_container_for(obj)
