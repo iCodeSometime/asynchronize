@@ -1,3 +1,8 @@
+##
+# Include this module to allow a declarative syntax for defining asynch methods
+#
+#   Defines only one method on the including class: `asynchronize`
+#
 module Asynchronize
   def self.included(base)
     base.class_eval do
@@ -9,8 +14,10 @@ module Asynchronize
       #   2. Scopes that module to the calling class.
       #   3. Defines each of the passed methods on that module.
       #
+      #   Additional notes:
       #   - The new methods wrap the old method within Thread.new.
       #   - Subsequent calls only add methods to the existing Module.
+      #   - Will silently fail if the method has already been asynchronized
       #
       # @param methods [Symbol] The methods to be asynchronized.
       # @example To add any number of methods to be asynchronized.
