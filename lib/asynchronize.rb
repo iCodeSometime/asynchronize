@@ -11,7 +11,7 @@ module Asynchronize
       # Call to asynchronize a method.
       #
       #   This does two things
-      #   1. Creates and prepends a module BaseName::Asynchronized.
+      #   1. Creates and prepends a module <BaseName>::Asynchronized.
       #   2. Defines each of the passed methods on that module.
       #
       #   Additional notes:

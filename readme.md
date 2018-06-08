@@ -28,10 +28,10 @@ end
 ```
 
 Now, to call those methods.
-You can pass a block, and access the return value as the block parameter.s
-It will still return the thread; the return value from your block will be
-accessible at `Thread#value` and the return value from the original function
-will be accessible via the thread variable `:return_value`.
+You can pass a block, and access the return value as the block parameters. The
+return value from your block will be accessible at `Thread#value` and the return
+value from the original function will be accessible via the thread variable
+`:return_value`.
 ```Ruby
 thread = Test.new.my_test do |return_value|
   return return_value.length
