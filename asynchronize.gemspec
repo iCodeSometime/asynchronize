@@ -25,7 +25,10 @@ Gem::Specification.new do |s|
   ]
   s.required_ruby_version = '>= 2.3'
   s.post_install_message = 'Making something cool with asynchronize? ' +
-                           'Let me know at ' + code_repo + '!!'
+                           'Let me know at ' + code_repo
   s.homepage = code_repo
   s.license = 'MIT'
+  s.add_development_dependency 'rake'
+  s.add_development_dependency 'minitest'
+  s.add_development_dependency 'simplecov'
 end
