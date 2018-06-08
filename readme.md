@@ -46,13 +46,8 @@ thread.join[:return_value] # > also test
 ```
 
 As you can see, it's just a regular thread. Make sure you call `Thread#join` to
-<<<<<<< HEAD
-make sure it completes before your process exits, and to catch any exceptions
-that were thrown!
-=======
 ensure it completes before your process exits, and to catch any exceptions that
 may have been thrown!
->>>>>>> master
 
 ## Inspiration
 While working on another project, I found myself writing this way too often:
