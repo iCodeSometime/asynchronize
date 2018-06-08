@@ -5,11 +5,12 @@ Gem::Specification.new do |s|
   s.name = 'asynchronize'
   s.version = '0.3.0'
   s.date = Date.today.to_s
-  s.summary = 'A declarative syntax for creating multithreaded methods.'
-  s.description = %w{Sometimes you just want a regular thread without the
-                    overhead of a whole new layer of abstraction.
-                    Asynchronize provides a declarative syntax to wrap any
-                    method in a Thread.}.join(' ')
+  s.summary = 'A declarative syntax for creating asynchronous methods.'
+  s.description = %w{Asynchronize provides a declarative syntax for creating
+                    asynchronous methods. Sometimes you just want a regular
+                    thread without the overhead of a whole new layer of
+                    abstraction. Asynchronize provides a declarative syntax to
+                    wrap any method in a Thread.}.join(' ')
   s.author = 'Kenneth Cochran'
   s.email = 'kenneth.cochran101@gmail.com'
   s.files = [

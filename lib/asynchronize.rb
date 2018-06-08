@@ -53,7 +53,7 @@ module Asynchronize
   ##
   # Build Method
   #
-  #  This always returns the same Proc object. In it's own method for clarity.
+  #   This always returns the same Proc object. In it's own method for clarity.
   #
   # @return [Proc] The actual asynchronous method defined.
   #

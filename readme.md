@@ -2,7 +2,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/30d40e270a3d7a0775a9/maintainability)](https://codeclimate.com/github/kennycoc/asynchronize/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/30d40e270a3d7a0775a9/test_coverage)](https://codeclimate.com/github/kennycoc/asynchronize/test_coverage)
 # Asynchronize
-### A declarative syntax for creating multithreaded methods.
+### A declarative syntax for creating asynchronous methods.
 
 Find yourself writing the same boilerplate for all your asynchronous methods?
 Get dry with asynchronize.
@@ -64,9 +64,8 @@ memorize; sometimes you just want a normal thread. Now, just call asynchronize
 to make any method asynchronous.
 
 ## Versioning Policy
-
-Beginning with version 1.0.0, this project will follow [Semantic Versioning]
-(https://semver.org) until then, the patch number (0.0.x) will be
+Beginning with version 1.0.0, this project will follow [Semantic
+Versioning](https://semver.org) until then, the patch number (0.0.x) will be
 updated for any changes that do not affect the public interface. Versions that
 increment the minor number will have at least one of the following. A new
 feature will be added, some feature will be deprecated, or some previously
@@ -118,7 +117,7 @@ preventing usage of `super` with `define_method`. I'm unable to find a suitable
 workaround for this issue. (`method(__method__).super_method.call` causes
 problems when a method inherits from the asynchronized class.)
 
-Luckily, all major Ruby implementations support Ruby language version 2.3. So I
+Luckily, all major Ruby implementations support Ruby language version 2.3, so I
 don't see this as a huge problem. If anyone wants support for older versions,
 and knows how to workaround this issue, feel free to submit a pull request.
 
