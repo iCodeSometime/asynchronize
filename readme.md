@@ -19,7 +19,7 @@ class Test
   # Can be called before or after method definitions. I prefer it at the top of classes.
   asynchronize :my_test, :my_other_test
   def my_test
-    return 'test'
+    return 'testing'
   end
   def my_other_test
     #do stuff here too
@@ -28,26 +28,29 @@ end
 ```
 
 Now, to call those methods.
-You can manage the thread yourself; the returned value will be in the thread
-variable `:return_value` once it returns.
-```Ruby
-thread = Test.new.my_test
-puts thread.join[:return_value] # > test
-```
-
-Or to stay asynchronous when processing the result, you can pass it a block.
-It will still return the thread, and the return value will still be in the
-thread variable `:return_value`
+You can pass a block, and access the return value as the block parameter.s
+It will still return the thread; the return value from your block will be
+accessible at `Thread#value` and the return value from the original function
+will be accessible via the thread variable `:return_value`.
 ```Ruby
 thread = Test.new.my_test do |return_value|
-  puts return_value # > test
+  return return_value.length
 end
-thread.join[:return_value] # > also test
+thread.value          # > 7
+thread[:return_value] # > testing
 ```
 
-As you can see, it's just a regular thread. Make sure you call `Thread#join` to
-ensure it completes before your process exits, and to catch any exceptions that
-may have been thrown!
+Or, without a block `Thread#value` and `thread[:return_value]` both reference
+the return value of the original function.
+```Ruby
+thread = Test.new.my_test
+puts thread.value          # > testing
+puts thread[:return_value] # > testing
+```
+
+As you can see, it's just a regular thread. Make sure you call either
+`Thread#value` or`Thread#join` to ensure it completes before your process exits,
+and to catch any exceptions that may have been thrown!
 
 ## Inspiration
 While working on another project, I found myself writing this way too often:
@@ -59,9 +62,9 @@ def method_name(args)
 end
 ```
 It's extra typing, and adds an unneeded extra layer of nesting. I couldn't find
-an existing library that wasn't trying add new layers of abstraction to
-memorize; sometimes you just want a normal thread. Now, just call asynchronize
-to make any method asynchronous.
+an existing library that wasn't trying add new layers of abstraction I didn't
+need; sometimes you just want a normal thread. Now, just call asynchronize to
+make any method asynchronous.
 
 ## Versioning Policy
 Beginning with version 1.0.0, this project will follow [Semantic

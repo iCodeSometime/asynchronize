@@ -61,7 +61,8 @@ module Asynchronize
     return Proc.new do |*args, &block|
       return Thread.new(args, block) do |thread_args, thread_block|
         Thread.current[:return_value] = super(*thread_args)
-        thread_block.call(Thread.current[:return_value]) if thread_block
+        next thread_block.call(Thread.current[:return_value]) if thread_block
+        Thread.current[:return_value]
       end
     end
   end
