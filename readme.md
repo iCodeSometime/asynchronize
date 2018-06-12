@@ -28,24 +28,25 @@ end
 ```
 
 Now, to call those methods.
-You can pass a block, and access the return value as the block parameter. The
-return value from your block will be accessible at `Thread#value` and the return
-value from the original function will be accessible via the thread variable
-`:return_value`.
-```Ruby
-thread = Test.new.my_test do |return_value|
-  return_value.length
-end
-puts thread.value          # > 7
-puts thread[:return_value] # > testing
-```
 
-Or, without a block `Thread#value` and `thread[:return_value]` both reference
-the return value of the original function.
+The method's return value can be accessed either with `Thread#value` or through
+the thread param `:return_value` (make sure the thread is finished first!)
 ```Ruby
 thread = Test.new.my_test
 puts thread.value          # > testing
 puts thread[:return_value] # > testing
+```
+
+Or if called with a block, the method's return value will be passed as a
+parameter. In this case, the original function's return value is still
+accessible at `:return_value`, and `Thread#value` contains the value returned
+from the block.
+```Ruby
+thread = Test.new.my_test do |return_value|
+  return return_value.length
+end
+thread.value          # > 7
+thread[:return_value] # > testing
 ```
 
 As you can see, it's just a regular thread. Make sure you call either
@@ -113,7 +114,7 @@ use for interacting with threads. This project aims to be a light convenience
 wrapper around the existing language features. Just define a regular method,
 then interact with it's result like a regular thread.
 
-### What versions are supported?
+### What Ruby versions are supported?
 Ruby 2.3 and up. Unfortunately, Ruby versions prior to 2.0 do not support
 `Module#prepend` and are not supported. Ruby versions prior to 2.3 have a bug
 preventing usage of `super` with `define_method`. I'm unable to find a suitable
