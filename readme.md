@@ -43,7 +43,7 @@ accessible at `:return_value`, and `Thread#value` contains the value returned
 from the block.
 ```Ruby
 thread = Test.new.my_test do |return_value|
-  return return_value.length
+  return_value.length
 end
 puts thread.value          # > 7
 puts thread[:return_value] # > testing
