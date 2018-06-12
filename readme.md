@@ -45,8 +45,8 @@ from the block.
 thread = Test.new.my_test do |return_value|
   return return_value.length
 end
-thread.value          # > 7
-thread[:return_value] # > testing
+puts thread.value          # > 7
+puts thread[:return_value] # > testing
 ```
 
 As you can see, it's just a regular thread. Make sure you call either
