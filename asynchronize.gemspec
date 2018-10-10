@@ -3,7 +3,7 @@ code_repo = 'https://github.com/kennycoc/asynchronize'
 
 Gem::Specification.new do |s|
   s.name = 'asynchronize'
-  s.version = '0.4.0'
+  s.version = '0.4.1'
   s.date = Date.today.to_s
   s.summary = 'A declarative syntax for creating asynchronous methods.'
   s.description = %w{Asynchronize provides a declarative syntax for creating
