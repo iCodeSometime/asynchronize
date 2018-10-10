@@ -13,3 +13,14 @@ asynchronizes methods that override asynchronized methods in the parent class.
 
 ## 0.2.1
 - Memory usage optimizations
+
+## 0.3.0
+- Rewrite using Module.prepend.
+
+## 0.4.0
+- Update API to be more consistent with built in threads.
+- Add ability to retrieve both post-block and pre-block data from thread.
+
+## 0.4.1
+- Update dependencies to latest version
+
