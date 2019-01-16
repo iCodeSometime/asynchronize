@@ -126,12 +126,12 @@ don't see this as a huge problem. If anyone wants support for older versions,
 and knows how to work around this issue, feel free to submit a pull request.
 
 We explicitly test against the following versions:
- - Matz Ruby 2.5.1
- - Matz Ruby 2.3.4
- - JRuby 9.1.13 (language version 2.3.3)
- - Rubinius 3.105 (language version 2.3.1)
+ - Matz Ruby 2.6.0
+ - Matz Ruby 2.3.8
+ - JRuby 9.2.5.0 (ruby language version 2.5.x)
+ - Rubinius 3.100 (ruby language version 2.3.1)
 
-## Is it any good?
+### Is it any good?
 [Yes](https://news.ycombinator.com/item?id=3067434)
 
 ## License

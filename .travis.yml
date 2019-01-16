@@ -3,10 +3,10 @@ env:
     - CC_TEST_REPORTER_ID=5779741f84b94f962138194592b1d6a3036b6b49ae0b800c4d75fea1ef4460c0
 language: ruby
 rvm:
-  - 2.5
-  - 2.3
-  - jruby-9.1
-  - rbx-3
+  - 2.6.0
+  - 2.3.8
+  - jruby-9.2.5.0
+  - rbx-3.100
 git:
   depth: false
 before_script:
