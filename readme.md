@@ -131,5 +131,8 @@ We explicitly test against the following versions:
  - JRuby 9.1.13 (language version 2.3.3)
  - Rubinius 3.105 (language version 2.3.1)
 
+## Is it any good?
+[Yes](https://news.ycombinator.com/item?id=3067434)
+
 ## License
 MIT
