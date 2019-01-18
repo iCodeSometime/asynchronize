@@ -134,5 +134,8 @@ We explicitly test against the following versions:
 ### Is it any good?
 [Yes](https://news.ycombinator.com/item?id=3067434)
 
+### Does anyone like it?
+It was [featured in Ruby Weekly!](https://rubyweekly.com/issues/402)
+
 ## License
 MIT
