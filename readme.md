@@ -83,11 +83,41 @@ inheritance, so it won't be a problem.
 
 ### So, how does it work?
 When you `include Asynchronize` it creates an `asynchronize` method on your
-class. The first time you call this method with any arguments, it creates a new
-module with the methods you define. It uses `Module#prepend` to cause method
-calls on the original object to be sent to it instead, and uses super to call
-your original method inside its own thread.
+class. 
 
+```ruby
+require 'asynchronize'
+class Test
+  include Asynchronize
+end
+Test.methods - Object.methods # > [:asynchronize]
+```
+
+The first time you call this method with any arguments, it creates a new
+module with the methods you define. It uses `Module#prepend` to insert itself at the top of the
+class's inheritance chain. This means that its methods are called before the class's own methods.
+
+```ruby
+class Test
+  asynchronize :my_test
+  def my_test
+    return 'testing'
+  end
+end
+
+Test.constants # > [:Asynchronized]
+Test::Asynchronized.instance_methods # > [:my_test]
+Test.ancestors # > [Test::Asynchronized, Test, Asynchronize, Object, Kernel, BasicObject]
+```
+
+Where the implementation of Test::Asynchronized#my_test (and any other method) is like
+```ruby
+return Thread.new(args, block) do |thread_args, thread_block|
+  Thread.current[:return_value] = super(*thread_args)
+  next thread_block.call(Thread.current[:return_value]) if thread_block
+  Thread.current[:return_value]
+end
+```
 This implementation allows you to call asynchronize at the top of the class and
 then define the methods below. Since it changes how you interact with those
 method's return values, I thought it was important to allow this.
