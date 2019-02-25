@@ -166,6 +166,6 @@ We explicitly test against the following versions:
 
 ### Does anyone like it?
 It was [featured in Ruby Weekly!](https://rubyweekly.com/issues/402)
-
+Also mentioned in russian dev news aggregator [dou.ua](https://dou.ua/lenta/digests/ruby-digest-19)
 ## License
 MIT
