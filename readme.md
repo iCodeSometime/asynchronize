@@ -63,7 +63,7 @@ def method_name(args)
 end
 ```
 It's extra typing, and adds an unneeded extra layer of nesting. I couldn't find
-an existing library that wasn't trying add new layers of abstraction I didn't
+an existing library that wasn't trying to add new layers of abstraction I didn't
 need; sometimes you just want a normal thread. Now, just call asynchronize to
 make any method asynchronous.
 
@@ -83,11 +83,41 @@ inheritance, so it won't be a problem.
 
 ### So, how does it work?
 When you `include Asynchronize` it creates an `asynchronize` method on your
-class. The first time you call this method with any arguments, it creates a new
-module with the methods you define. It uses `Module#prepend` to cause method
-calls on the original object to be sent to it instead, and uses super to call
-your original method inside it's own thread.
+class. 
 
+```ruby
+require 'asynchronize'
+class Test
+  include Asynchronize
+end
+Test.methods - Object.methods # > [:asynchronize]
+```
+
+The first time you call this method with any arguments, it creates a new
+module with the methods you define. It uses `Module#prepend` to insert itself at the top of the
+class's inheritance chain. This means that its methods are called before the class's own methods.
+
+```ruby
+class Test
+  asynchronize :my_test
+  def my_test
+    return 'testing'
+  end
+end
+
+Test.constants # > [:Asynchronized]
+Test::Asynchronized.instance_methods # > [:my_test]
+Test.ancestors # > [Test::Asynchronized, Test, Asynchronize, Object, Kernel, BasicObject]
+```
+
+Where the implementation of Test::Asynchronized#my_test (and any other method) is like
+```ruby
+return Thread.new(args, block) do |thread_args, thread_block|
+  Thread.current[:return_value] = super(*thread_args)
+  next thread_block.call(Thread.current[:return_value]) if thread_block
+  Thread.current[:return_value]
+end
+```
 This implementation allows you to call asynchronize at the top of the class and
 then define the methods below. Since it changes how you interact with those
 method's return values, I thought it was important to allow this.
@@ -96,7 +126,7 @@ method's return values, I thought it was important to allow this.
 It's super tiny. Just a light wrapper around the existing language features.
 Seriously, it's just around forty lines of code. Actually, according to
 [cloc](https://www.npmjs.com/package/cloc) there's almost four times as many
-lines in the tests as the source. You should read it, I'd love feedback!
+lines in the tests as the source. You should read it. I'd love feedback!
 
 ### Do you accept contributions?
 Absolutely!
@@ -112,7 +142,7 @@ It's just `bundle` to install dependencies, and `rake` to run the tests.
 Those and other similar projects aim to create an entirely new abstraction to
 use for interacting with threads. This project aims to be a light convenience
 wrapper around the existing language features. Just define a regular method,
-then interact with it's result like a regular thread.
+then interact with its result like a regular thread.
 
 ### What Ruby versions are supported?
 Ruby 2.3 and up. Unfortunately, Ruby versions prior to 2.0 do not support
@@ -123,13 +153,19 @@ problems when a method inherits from the asynchronized class.)
 
 Luckily, all major Ruby implementations support Ruby language version 2.3, so I
 don't see this as a huge problem. If anyone wants support for older versions,
-and knows how to workaround this issue, feel free to submit a pull request.
+and knows how to work around this issue, feel free to submit a pull request.
 
 We explicitly test against the following versions:
- - Matz Ruby 2.5.1
- - Matz Ruby 2.3.4
- - JRuby 9.1.13 (language version 2.3.3)
- - Rubinius 3.105 (language version 2.3.1)
+ - Matz Ruby 2.6.0
+ - Matz Ruby 2.3.8
+ - JRuby 9.2.5.0 (ruby language version 2.5.x)
+ - Rubinius 3.100 (ruby language version 2.3.1)
 
+### Is it any good?
+[Yes](https://news.ycombinator.com/item?id=3067434)
+
+### Does anyone like it?
+ - It was [featured in Ruby Weekly!](https://rubyweekly.com/issues/402)
+ - Also mentioned in russian dev news aggregator [dou.ua](https://dou.ua/lenta/digests/ruby-digest-19)
 ## License
 MIT
